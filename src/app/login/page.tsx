@@ -9,6 +9,8 @@ import {
 	Lock,
 	Mail,
 	ArrowLeft,
+	User,
+	Shield,
 } from "lucide-react";
 
 export default function LoginPage() {
@@ -17,7 +19,15 @@ export default function LoginPage() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState("");
+	const [userType, setUserType] = useState<"student" | "admin">("student");
 	const router = useRouter();
+
+	const handleUserTypeChange = (type: "student" | "admin") => {
+		setUserType(type);
+		setEmail("");
+		setPassword("");
+		setError("");
+	};
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -27,11 +37,20 @@ export default function LoginPage() {
 		// Simulate login delay
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 
-		// Check credentials
-		if (email === "admin@agi.com" && password === "admin123") {
-			router.push("/dashboard");
+		// Check credentials based on user type
+		if (userType === "admin") {
+			if (email === "admin@agi.com" && password === "admin123") {
+				router.push("/dashboard");
+			} else {
+				setError("Invalid admin credentials. Please try again.");
+			}
 		} else {
-			setError("Invalid email or password. Please try again.");
+			// Student login - using demo credentials
+			if (email === "student@agi.com" && password === "student123") {
+				router.push("/student-dashboard");
+			} else {
+				setError("Invalid student credentials. Please try again.");
+			}
 		}
 		setIsLoading(false);
 	};
@@ -55,14 +74,73 @@ export default function LoginPage() {
 					<h1 className="text-3xl font-bold text-gray-900 mb-2">
 						Welcome Back
 					</h1>
-					<p className="text-gray-600">Sign in to access your dashboard</p>
+					<p className="text-gray-600">
+						Sign in to access your {userType === "admin" ? "admin" : "student"}{" "}
+						dashboard
+					</p>
 				</div>
 
 				{/* Login Form */}
 				<div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 animate-fade-in-up">
+					{/* User Type Slider */}
+					<div className="relative mb-8">
+						<div className="flex bg-gray-100 rounded-lg p-1 relative">
+							{/* Sliding background */}
+							<div
+								className={`absolute top-1 h-10 w-1/2 bg-blue-600 rounded-md transition-transform duration-300 ease-in-out ${
+									userType === "admin" ? "translate-x-full" : "translate-x-0"
+								}`}
+							/>
+
+							{/* Student Button */}
+							<button
+								type="button"
+								onClick={() => handleUserTypeChange("student")}
+								className={`flex-1 flex items-center justify-center py-2 px-4 rounded-md transition-colors duration-300 relative z-10 ${
+									userType === "student"
+										? "text-white"
+										: "text-gray-600 hover:text-gray-800"
+								}`}>
+								<User className="w-4 h-4 mr-2" />
+								Student
+							</button>
+
+							{/* Admin Button */}
+							<button
+								type="button"
+								onClick={() => handleUserTypeChange("admin")}
+								className={`flex-1 flex items-center justify-center py-2 px-4 rounded-md transition-colors duration-300 relative z-10 ${
+									userType === "admin"
+										? "text-white"
+										: "text-gray-600 hover:text-gray-800"
+								}`}>
+								<Shield className="w-4 h-4 mr-2" />
+								Admin
+							</button>
+						</div>
+					</div>
+
 					<form
 						onSubmit={handleLogin}
 						className="space-y-6">
+						{/* Form Header with Icon */}
+						<div className="text-center mb-6">
+							<div
+								className={`inline-flex items-center justify-center w-12 h-12 rounded-lg mb-3 transition-colors duration-300 ${
+									userType === "admin"
+										? "bg-red-100 text-red-600"
+										: "bg-blue-100 text-blue-600"
+								}`}>
+								{userType === "admin" ? (
+									<Shield className="w-6 h-6" />
+								) : (
+									<User className="w-6 h-6" />
+								)}
+							</div>
+							<h3 className="text-xl font-semibold text-gray-900">
+								{userType === "admin" ? "Admin Login" : "Student Login"}
+							</h3>
+						</div>
 						{/* Email Field */}
 						<div>
 							<label
@@ -130,14 +208,18 @@ export default function LoginPage() {
 						<button
 							type="submit"
 							disabled={isLoading}
-							className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] shadow-lg hover:shadow-xl">
+							className={`w-full py-3 px-4 rounded-lg font-medium focus:ring-2 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] shadow-lg hover:shadow-xl text-white ${
+								userType === "admin"
+									? "bg-red-600 hover:bg-red-700 focus:ring-red-500"
+									: "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500"
+							}`}>
 							{isLoading ? (
 								<div className="flex items-center justify-center">
 									<div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
 									Signing In...
 								</div>
 							) : (
-								"Sign In"
+								`Sign In as ${userType === "admin" ? "Admin" : "Student"}`
 							)}
 						</button>
 					</form>
@@ -147,13 +229,39 @@ export default function LoginPage() {
 						<p className="text-sm font-medium text-gray-700 mb-2">
 							Demo Credentials:
 						</p>
-						<div className="space-y-1 text-sm text-gray-600">
-							<p>
-								<strong>Email:</strong> admin@agi.com
-							</p>
-							<p>
-								<strong>Password:</strong> admin123
-							</p>
+						<div className="space-y-2">
+							<div
+								className={`p-2 rounded ${
+									userType === "student"
+										? "bg-blue-50 border border-blue-200"
+										: "bg-gray-50"
+								}`}>
+								<p className="text-sm font-medium text-blue-700">Student:</p>
+								<div className="text-sm text-blue-600">
+									<p>
+										<strong>Email:</strong> student@agi.com
+									</p>
+									<p>
+										<strong>Password:</strong> student123
+									</p>
+								</div>
+							</div>
+							<div
+								className={`p-2 rounded ${
+									userType === "admin"
+										? "bg-red-50 border border-red-200"
+										: "bg-gray-50"
+								}`}>
+								<p className="text-sm font-medium text-red-700">Admin:</p>
+								<div className="text-sm text-red-600">
+									<p>
+										<strong>Email:</strong> admin@agi.com
+									</p>
+									<p>
+										<strong>Password:</strong> admin123
+									</p>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
