@@ -133,3 +133,30 @@ html {
 		font-feature-settings: "rlig" 1, "calt" 1;
 	}
 }
+
+/* Additional animations for login slider */
+@keyframes slideLeft {
+	from {
+		transform: translateX(100%);
+	}
+	to {
+		transform: translateX(0);
+	}
+}
+
+@keyframes slideRight {
+	from {
+		transform: translateX(-100%);
+	}
+	to {
+		transform: translateX(0);
+	}
+}
+
+.animate-slide-left {
+	animation: slideLeft 0.3s ease-in-out;
+}
+
+.animate-slide-right {
+	animation: slideRight 0.3s ease-in-out;
+}
