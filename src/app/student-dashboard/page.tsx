@@ -4,13 +4,13 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import StudentSidebar from "@/components/dashboard/student-sidebar";
 import Header from "@/components/dashboard/header";
-import { 
-	Target, 
-	Clock, 
-	Award, 
+import {
+	Target,
+	Clock,
+	Award,
 	CheckCircle,
 	AlertCircle,
-	BarChart3
+	BarChart3,
 } from "lucide-react";
 
 // Mock student data
@@ -19,7 +19,7 @@ const studentData = {
 	studentId: "MCA24001",
 	course: "MCA",
 	batch: "2024-26",
-	email: "john.smith@student.agi.edu.in"
+	email: "john.smith@student.agi.edu.in",
 };
 
 const assessmentStats = {
@@ -27,7 +27,7 @@ const assessmentStats = {
 	completed: 3,
 	pending: 2,
 	averageScore: 78.5,
-	placementReadiness: "Good"
+	placementReadiness: "Good",
 };
 
 const recentAssessments = [
@@ -37,15 +37,15 @@ const recentAssessments = [
 		status: "completed" as const,
 		score: 85,
 		completedDate: "2025-09-01",
-		category: "Communication"
+		category: "Communication",
 	},
 	{
 		id: 2,
 		title: "Technical Skills Evaluation",
-		status: "completed" as const, 
+		status: "completed" as const,
 		score: 78,
 		completedDate: "2025-08-28",
-		category: "Domain Skills"
+		category: "Domain Skills",
 	},
 	{
 		id: 3,
@@ -53,22 +53,22 @@ const recentAssessments = [
 		status: "completed" as const,
 		score: 82,
 		completedDate: "2025-08-25",
-		category: "Digital Skills"
+		category: "Digital Skills",
 	},
 	{
 		id: 4,
 		title: "Problem Solving Assessment",
 		status: "pending" as const,
 		dueDate: "2025-09-10",
-		category: "Problem Solving"
+		category: "Problem Solving",
 	},
 	{
 		id: 5,
 		title: "Interpersonal Skills Evaluation",
 		status: "pending" as const,
 		dueDate: "2025-09-15",
-		category: "Interpersonal"
-	}
+		category: "Interpersonal",
+	},
 ];
 
 const skillProgress = [
@@ -76,7 +76,7 @@ const skillProgress = [
 	{ skill: "Communication", score: 85, color: "bg-green-500" },
 	{ skill: "Digital Skills", score: 82, color: "bg-purple-500" },
 	{ skill: "Interpersonal", score: 0, color: "bg-yellow-500" },
-	{ skill: "Problem Solving", score: 0, color: "bg-red-500" }
+	{ skill: "Problem Solving", score: 0, color: "bg-red-500" },
 ];
 
 export default function StudentDashboard() {
@@ -87,7 +87,7 @@ export default function StudentDashboard() {
 	};
 
 	const handleViewAllAssessments = () => {
-		router.push('/student-dashboard/assessments');
+		router.push("/student-dashboard/assessments");
 	};
 
 	return (
@@ -112,7 +112,9 @@ export default function StudentDashboard() {
 							<div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
 								<span>{studentData.studentId}</span>
 								<span>•</span>
-								<span>{studentData.course} - {studentData.batch}</span>
+								<span>
+									{studentData.course} - {studentData.batch}
+								</span>
 							</div>
 						</div>
 
@@ -124,8 +126,12 @@ export default function StudentDashboard() {
 										<Target className="w-8 h-8 text-blue-600" />
 									</div>
 									<div className="ml-4">
-										<p className="text-sm font-medium text-gray-600">Total Assessments</p>
-										<p className="text-2xl font-bold text-gray-900">{assessmentStats.total}</p>
+										<p className="text-sm font-medium text-gray-600">
+											Total Assessments
+										</p>
+										<p className="text-2xl font-bold text-gray-900">
+											{assessmentStats.total}
+										</p>
 									</div>
 								</div>
 							</div>
@@ -136,8 +142,12 @@ export default function StudentDashboard() {
 										<CheckCircle className="w-8 h-8 text-green-600" />
 									</div>
 									<div className="ml-4">
-										<p className="text-sm font-medium text-gray-600">Completed</p>
-										<p className="text-2xl font-bold text-gray-900">{assessmentStats.completed}</p>
+										<p className="text-sm font-medium text-gray-600">
+											Completed
+										</p>
+										<p className="text-2xl font-bold text-gray-900">
+											{assessmentStats.completed}
+										</p>
 									</div>
 								</div>
 							</div>
@@ -149,7 +159,9 @@ export default function StudentDashboard() {
 									</div>
 									<div className="ml-4">
 										<p className="text-sm font-medium text-gray-600">Pending</p>
-										<p className="text-2xl font-bold text-gray-900">{assessmentStats.pending}</p>
+										<p className="text-2xl font-bold text-gray-900">
+											{assessmentStats.pending}
+										</p>
 									</div>
 								</div>
 							</div>
@@ -160,8 +172,12 @@ export default function StudentDashboard() {
 										<BarChart3 className="w-8 h-8 text-purple-600" />
 									</div>
 									<div className="ml-4">
-										<p className="text-sm font-medium text-gray-600">Average Score</p>
-										<p className="text-2xl font-bold text-gray-900">{assessmentStats.averageScore}%</p>
+										<p className="text-sm font-medium text-gray-600">
+											Average Score
+										</p>
+										<p className="text-2xl font-bold text-gray-900">
+											{assessmentStats.averageScore}%
+										</p>
 									</div>
 								</div>
 							</div>
@@ -172,17 +188,20 @@ export default function StudentDashboard() {
 							{/* Recent Assessments */}
 							<div className="lg:col-span-2 bg-white rounded-lg shadow">
 								<div className="p-6 border-b border-gray-200 flex justify-between items-center">
-									<h3 className="text-lg font-medium text-gray-900">Recent Assessments</h3>
+									<h3 className="text-lg font-medium text-gray-900">
+										Recent Assessments
+									</h3>
 									<button
 										onClick={handleViewAllAssessments}
-										className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors duration-200"
-									>
+										className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors duration-200">
 										View All
 									</button>
 								</div>
 								<div className="divide-y divide-gray-200">
 									{recentAssessments.map((assessment) => (
-										<div key={assessment.id} className="p-6 hover:bg-gray-50">
+										<div
+											key={assessment.id}
+											className="p-6 hover:bg-gray-50">
 											<div className="flex items-center justify-between">
 												<div className="flex-1">
 													<h4 className="text-sm font-medium text-gray-900">
@@ -193,11 +212,19 @@ export default function StudentDashboard() {
 													</p>
 													{assessment.status === "completed" ? (
 														<p className="text-sm text-gray-500 mt-1">
-															Completed on {assessment.completedDate && new Date(assessment.completedDate).toLocaleDateString()}
+															Completed on{" "}
+															{assessment.completedDate &&
+																new Date(
+																	assessment.completedDate
+																).toLocaleDateString()}
 														</p>
 													) : (
 														<p className="text-sm text-orange-600 mt-1">
-															Due: {assessment.dueDate && new Date(assessment.dueDate).toLocaleDateString()}
+															Due:{" "}
+															{assessment.dueDate &&
+																new Date(
+																	assessment.dueDate
+																).toLocaleDateString()}
 														</p>
 													)}
 												</div>
@@ -208,17 +235,20 @@ export default function StudentDashboard() {
 																<div className="text-sm font-medium text-gray-900">
 																	{assessment.score}%
 																</div>
-																<div className="text-xs text-gray-500">Score</div>
+																<div className="text-xs text-gray-500">
+																	Score
+																</div>
 															</div>
 															<CheckCircle className="w-5 h-5 text-green-500" />
 														</>
 													) : (
 														<>
 															<AlertCircle className="w-5 h-5 text-orange-500" />
-															<button 
-																onClick={() => handleStartAssessment(assessment.id)}
-																className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition-colors duration-200"
-															>
+															<button
+																onClick={() =>
+																	handleStartAssessment(assessment.id)
+																}
+																className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition-colors duration-200">
 																Start
 															</button>
 														</>
@@ -233,13 +263,17 @@ export default function StudentDashboard() {
 							{/* Skill Progress */}
 							<div className="bg-white rounded-lg shadow">
 								<div className="p-6 border-b border-gray-200">
-									<h3 className="text-lg font-medium text-gray-900">Skill Progress</h3>
+									<h3 className="text-lg font-medium text-gray-900">
+										Skill Progress
+									</h3>
 								</div>
 								<div className="p-6 space-y-4">
 									{skillProgress.map((skill) => (
 										<div key={skill.skill}>
 											<div className="flex justify-between text-sm mb-1">
-												<span className="font-medium text-gray-700">{skill.skill}</span>
+												<span className="font-medium text-gray-700">
+													{skill.skill}
+												</span>
 												<span className="text-gray-600">
 													{skill.score > 0 ? `${skill.score}%` : "Not taken"}
 												</span>
@@ -247,8 +281,7 @@ export default function StudentDashboard() {
 											<div className="w-full bg-gray-200 rounded-full h-2">
 												<div
 													className={`h-2 rounded-full ${skill.color}`}
-													style={{ width: `${skill.score}%` }}
-												></div>
+													style={{ width: `${skill.score}%` }}></div>
 											</div>
 										</div>
 									))}

@@ -4,14 +4,14 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import StudentSidebar from "@/components/dashboard/student-sidebar";
 import Header from "@/components/dashboard/header";
-import { 
-	Play, 
-	Clock, 
-	CheckCircle, 
+import {
+	Play,
+	Clock,
+	CheckCircle,
 	BarChart3,
 	Filter,
 	Search,
-	Target
+	Target,
 } from "lucide-react";
 
 interface StudentAssessment {
@@ -41,7 +41,7 @@ const mockAssessments: StudentAssessment[] = [
 		duration: 30,
 		completedDate: "2025-09-01",
 		attempts: 1,
-		maxAttempts: 2
+		maxAttempts: 2,
 	},
 	{
 		id: 2,
@@ -54,7 +54,7 @@ const mockAssessments: StudentAssessment[] = [
 		duration: 45,
 		completedDate: "2025-08-28",
 		attempts: 1,
-		maxAttempts: 2
+		maxAttempts: 2,
 	},
 	{
 		id: 3,
@@ -67,7 +67,7 @@ const mockAssessments: StudentAssessment[] = [
 		duration: 30,
 		completedDate: "2025-08-25",
 		attempts: 1,
-		maxAttempts: 2
+		maxAttempts: 2,
 	},
 	{
 		id: 4,
@@ -79,7 +79,7 @@ const mockAssessments: StudentAssessment[] = [
 		duration: 40,
 		dueDate: "2025-09-10",
 		attempts: 0,
-		maxAttempts: 2
+		maxAttempts: 2,
 	},
 	{
 		id: 5,
@@ -91,8 +91,8 @@ const mockAssessments: StudentAssessment[] = [
 		duration: 35,
 		dueDate: "2025-09-15",
 		attempts: 0,
-		maxAttempts: 2
-	}
+		maxAttempts: 2,
+	},
 ];
 
 const getStatusColor = (status: string) => {
@@ -119,10 +119,12 @@ export default function StudentAssessments() {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [filterStatus, setFilterStatus] = useState("all");
 
-	const filteredAssessments = mockAssessments.filter(assessment => {
-		const matchesSearch = assessment.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-							 assessment.category.toLowerCase().includes(searchTerm.toLowerCase());
-		const matchesFilter = filterStatus === "all" || assessment.status === filterStatus;
+	const filteredAssessments = mockAssessments.filter((assessment) => {
+		const matchesSearch =
+			assessment.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			assessment.category.toLowerCase().includes(searchTerm.toLowerCase());
+		const matchesFilter =
+			filterStatus === "all" || assessment.status === filterStatus;
 		return matchesSearch && matchesFilter;
 	});
 
@@ -147,8 +149,12 @@ export default function StudentAssessments() {
 						{/* Header */}
 						<div className="flex justify-between items-center">
 							<div>
-								<h1 className="text-3xl font-bold text-gray-900">My Assessments</h1>
-								<p className="text-gray-600 mt-1">Complete your placement readiness assessments</p>
+								<h1 className="text-3xl font-bold text-gray-900">
+									My Assessments
+								</h1>
+								<p className="text-gray-600 mt-1">
+									Complete your placement readiness assessments
+								</p>
 							</div>
 						</div>
 
@@ -159,7 +165,9 @@ export default function StudentAssessments() {
 									<Target className="w-8 h-8 text-blue-600" />
 									<div className="ml-3">
 										<p className="text-sm font-medium text-gray-600">Total</p>
-										<p className="text-2xl font-bold text-gray-900">{mockAssessments.length}</p>
+										<p className="text-2xl font-bold text-gray-900">
+											{mockAssessments.length}
+										</p>
 									</div>
 								</div>
 							</div>
@@ -167,9 +175,14 @@ export default function StudentAssessments() {
 								<div className="flex items-center">
 									<CheckCircle className="w-8 h-8 text-green-600" />
 									<div className="ml-3">
-										<p className="text-sm font-medium text-gray-600">Completed</p>
+										<p className="text-sm font-medium text-gray-600">
+											Completed
+										</p>
 										<p className="text-2xl font-bold text-gray-900">
-											{mockAssessments.filter(a => a.status === "completed").length}
+											{
+												mockAssessments.filter((a) => a.status === "completed")
+													.length
+											}
 										</p>
 									</div>
 								</div>
@@ -180,7 +193,10 @@ export default function StudentAssessments() {
 									<div className="ml-3">
 										<p className="text-sm font-medium text-gray-600">Pending</p>
 										<p className="text-2xl font-bold text-gray-900">
-											{mockAssessments.filter(a => a.status === "pending").length}
+											{
+												mockAssessments.filter((a) => a.status === "pending")
+													.length
+											}
 										</p>
 									</div>
 								</div>
@@ -189,14 +205,18 @@ export default function StudentAssessments() {
 								<div className="flex items-center">
 									<BarChart3 className="w-8 h-8 text-purple-600" />
 									<div className="ml-3">
-										<p className="text-sm font-medium text-gray-600">Avg Score</p>
+										<p className="text-sm font-medium text-gray-600">
+											Avg Score
+										</p>
 										<p className="text-2xl font-bold text-gray-900">
 											{Math.round(
 												mockAssessments
-													.filter(a => a.score !== undefined)
+													.filter((a) => a.score !== undefined)
 													.reduce((sum, a) => sum + (a.score || 0), 0) /
-												mockAssessments.filter(a => a.score !== undefined).length
-											)}%
+													mockAssessments.filter((a) => a.score !== undefined)
+														.length
+											)}
+											%
 										</p>
 									</div>
 								</div>
@@ -219,11 +239,10 @@ export default function StudentAssessments() {
 							</div>
 							<div className="flex items-center gap-2">
 								<Filter className="w-4 h-4 text-gray-400" />
-								<select 
+								<select
 									value={filterStatus}
 									onChange={(e) => setFilterStatus(e.target.value)}
-									className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-								>
+									className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
 									<option value="all">All Status</option>
 									<option value="pending">Pending</option>
 									<option value="in_progress">In Progress</option>
@@ -235,7 +254,9 @@ export default function StudentAssessments() {
 						{/* Assessments Grid */}
 						<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 							{filteredAssessments.map((assessment) => (
-								<div key={assessment.id} className="bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+								<div
+									key={assessment.id}
+									className="bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
 									<div className="p-6">
 										<div className="flex justify-between items-start mb-4">
 											<div className="flex-1">
@@ -256,8 +277,12 @@ export default function StudentAssessments() {
 													</span>
 												</div>
 											</div>
-											<span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(assessment.status)}`}>
-												{assessment.status.charAt(0).toUpperCase() + assessment.status.slice(1).replace("_", " ")}
+											<span
+												className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
+													assessment.status
+												)}`}>
+												{assessment.status.charAt(0).toUpperCase() +
+													assessment.status.slice(1).replace("_", " ")}
 											</span>
 										</div>
 
@@ -265,60 +290,82 @@ export default function StudentAssessments() {
 											<div className="flex items-center justify-between">
 												<div className="space-y-1">
 													<div className="text-sm text-gray-600">
-														Category: <span className="font-medium">{assessment.category}</span>
+														Category:{" "}
+														<span className="font-medium">
+															{assessment.category}
+														</span>
 													</div>
 													{assessment.status === "completed" ? (
 														<div className="flex items-center space-x-4">
 															<div className="text-sm text-gray-600">
-																Score: <span className={`font-bold ${getScoreColor(assessment.score || 0)}`}>
+																Score:{" "}
+																<span
+																	className={`font-bold ${getScoreColor(
+																		assessment.score || 0
+																	)}`}>
 																	{assessment.score}%
 																</span>
 															</div>
 															<div className="text-sm text-gray-600">
-																Completed: {assessment.completedDate && new Date(assessment.completedDate).toLocaleDateString()}
+																Completed:{" "}
+																{assessment.completedDate &&
+																	new Date(
+																		assessment.completedDate
+																	).toLocaleDateString()}
 															</div>
 														</div>
 													) : (
 														<div className="text-sm text-gray-600">
-															Due: {assessment.dueDate && new Date(assessment.dueDate).toLocaleDateString()}
+															Due:{" "}
+															{assessment.dueDate &&
+																new Date(
+																	assessment.dueDate
+																).toLocaleDateString()}
 														</div>
 													)}
 													<div className="text-xs text-gray-500">
-														Attempts: {assessment.attempts}/{assessment.maxAttempts}
+														Attempts: {assessment.attempts}/
+														{assessment.maxAttempts}
 													</div>
 												</div>
 												<div className="flex space-x-2">
 													{assessment.status === "completed" ? (
 														<button
 															onClick={() => handleViewResults(assessment.id)}
-															className="inline-flex items-center px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm"
-														>
+															className="inline-flex items-center px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm">
 															<BarChart3 className="w-4 h-4 mr-1" />
 															View Results
 														</button>
 													) : (
 														<button
-															onClick={() => handleStartAssessment(assessment.id)}
-															disabled={assessment.attempts >= assessment.maxAttempts}
+															onClick={() =>
+																handleStartAssessment(assessment.id)
+															}
+															disabled={
+																assessment.attempts >= assessment.maxAttempts
+															}
 															className={`inline-flex items-center px-3 py-2 rounded-lg transition-colors text-sm ${
 																assessment.attempts >= assessment.maxAttempts
 																	? "bg-gray-100 text-gray-400 cursor-not-allowed"
 																	: "bg-green-600 text-white hover:bg-green-700"
-															}`}
-														>
+															}`}>
 															<Play className="w-4 h-4 mr-1" />
-															{assessment.status === "in_progress" ? "Continue" : "Start"}
+															{assessment.status === "in_progress"
+																? "Continue"
+																: "Start"}
 														</button>
 													)}
-													{assessment.status === "completed" && assessment.attempts < assessment.maxAttempts && (
-														<button
-															onClick={() => handleStartAssessment(assessment.id)}
-															className="inline-flex items-center px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm"
-														>
-															<Play className="w-4 h-4 mr-1" />
-															Retake
-														</button>
-													)}
+													{assessment.status === "completed" &&
+														assessment.attempts < assessment.maxAttempts && (
+															<button
+																onClick={() =>
+																	handleStartAssessment(assessment.id)
+																}
+																className="inline-flex items-center px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+																<Play className="w-4 h-4 mr-1" />
+																Retake
+															</button>
+														)}
 												</div>
 											</div>
 										</div>
@@ -331,7 +378,9 @@ export default function StudentAssessments() {
 							<div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
 								<div className="text-gray-500">
 									<Target className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-									<h3 className="text-lg font-medium mb-2">No assessments found</h3>
+									<h3 className="text-lg font-medium mb-2">
+										No assessments found
+									</h3>
 									<p>No assessments match your current search criteria.</p>
 								</div>
 							</div>
