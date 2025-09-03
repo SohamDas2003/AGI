@@ -177,6 +177,38 @@ export interface AssessmentQuestion {
 	points: number;
 }
 
+// New Assessment Creation Types
+export interface CreateAssessmentQuestion {
+	id: string;
+	text: string;
+	category:
+		| "domainSkills"
+		| "digital"
+		| "interpersonal"
+		| "communication"
+		| "problemSolving";
+}
+
+export interface CreateAssessmentForm {
+	title: string;
+	description: string;
+	course: "MCA" | "MMS" | "PGDM" | "ALL" | "";
+	batch: "2024-26" | "2025-27" | "";
+	questions: {
+		domainSkills: CreateAssessmentQuestion[];
+		digital: CreateAssessmentQuestion[];
+		interpersonal: CreateAssessmentQuestion[];
+		communication: CreateAssessmentQuestion[];
+		problemSolving: CreateAssessmentQuestion[];
+	};
+}
+
+export interface SkillCategory {
+	key: keyof CreateAssessmentForm["questions"];
+	label: string;
+	description: string;
+}
+
 // Filter and Search Types
 export interface StudentFilters {
 	course?: string;
