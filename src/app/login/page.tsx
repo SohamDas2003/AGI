@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 import {
 	Eye,
 	EyeOff,
@@ -21,6 +22,7 @@ export default function LoginPage() {
 	const [error, setError] = useState("");
 	const [userType, setUserType] = useState<"student" | "admin">("student");
 	const router = useRouter();
+	const { login } = useAuth();
 
 	const handleUserTypeChange = (type: "student" | "admin") => {
 		setUserType(type);
@@ -34,25 +36,25 @@ export default function LoginPage() {
 		setIsLoading(true);
 		setError("");
 
-		// Simulate login delay
-		await new Promise((resolve) => setTimeout(resolve, 1000));
+		try {
+			const success = await login(email, password, userType);
 
-		// Check credentials based on user type
-		if (userType === "admin") {
-			if (email === "admin@agi.com" && password === "admin123") {
-				router.push("/dashboard");
+			if (success) {
+				// Redirect based on user type
+				if (userType === "admin") {
+					router.push("/dashboard");
+				} else {
+					router.push("/student-dashboard");
+				}
 			} else {
-				setError("Invalid admin credentials. Please try again.");
+				setError("Invalid credentials. Please try again.");
 			}
-		} else {
-			// Student login - using demo credentials
-			if (email === "student@agi.com" && password === "student123") {
-				router.push("/student-dashboard");
-			} else {
-				setError("Invalid student credentials. Please try again.");
-			}
+		} catch (error) {
+			console.error("Login error:", error);
+			setError("An error occurred during login. Please try again.");
+		} finally {
+			setIsLoading(false);
 		}
-		setIsLoading(false);
 	};
 
 	return (
@@ -258,7 +260,7 @@ export default function LoginPage() {
 										<strong>Email:</strong> admin@agi.com
 									</p>
 									<p>
-										<strong>Password:</strong> admin123
+										<strong>Password:</strong> admin@123
 									</p>
 								</div>
 							</div>

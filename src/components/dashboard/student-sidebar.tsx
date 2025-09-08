@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 import {
 	LayoutDashboard,
 	Target,
@@ -11,6 +13,7 @@ import {
 	Search,
 	GraduationCap,
 	TrendingUp,
+	LogOut,
 } from "lucide-react";
 
 interface StudentSidebarProps {
@@ -51,6 +54,14 @@ const navigation = [
 ];
 
 export default function StudentSidebar({ className }: StudentSidebarProps) {
+	const { user, logout } = useAuth();
+	const router = useRouter();
+
+	const handleLogout = async () => {
+		await logout();
+		router.push("/login");
+	};
+
 	return (
 		<div
 			className={cn(
@@ -140,14 +151,26 @@ export default function StudentSidebar({ className }: StudentSidebarProps) {
 
 			{/* User Profile */}
 			<div className="p-4 border-t border-gray-200">
-				<div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200 cursor-pointer">
+				<div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50">
 					<div className="w-8 h-8 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full flex items-center justify-center">
-						<span className="text-sm font-medium text-white">JS</span>
+						<span className="text-sm font-medium text-white">
+							{user?.name ? user.name.charAt(0).toUpperCase() : "S"}
+						</span>
 					</div>
 					<div className="flex-1">
-						<p className="text-sm font-medium text-gray-900">John Smith</p>
-						<p className="text-xs text-gray-500">MCA - 2024-26</p>
+						<p className="text-sm font-medium text-gray-900">
+							{user?.name || "Student"}
+						</p>
+						<p className="text-xs text-gray-500">
+							{user?.studentId || user?.role}
+						</p>
 					</div>
+					<button
+						onClick={handleLogout}
+						className="p-1 text-gray-400 hover:text-red-600 transition-colors duration-200"
+						title="Logout">
+						<LogOut className="w-4 h-4" />
+					</button>
 				</div>
 			</div>
 		</div>

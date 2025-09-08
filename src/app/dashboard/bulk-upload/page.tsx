@@ -35,6 +35,7 @@ export default function BulkUploadPage() {
 	const [isUploading, setIsUploading] = useState(false);
 	const [uploadResult, setUploadResult] = useState<UploadResult | null>(null);
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+	const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const requiredFields = [
@@ -143,70 +144,94 @@ export default function BulkUploadPage() {
 		}
 	};
 
-	const simulateUpload = async () => {
+	const handleUpload = async () => {
 		if (!selectedFile) return;
 
 		setIsUploading(true);
 		setUploadProgress(0);
 
-		// Simulate upload progress
-		for (let i = 0; i <= 100; i += 10) {
-			setUploadProgress(i);
-			await new Promise((resolve) => setTimeout(resolve, 200));
+		try {
+			const formData = new FormData();
+			formData.append("file", selectedFile);
+
+			// Simulate progress with a small delay
+			const progressInterval = setInterval(() => {
+				setUploadProgress((prev) => {
+					if (prev >= 90) {
+						clearInterval(progressInterval);
+						return 90; // Stop at 90% until we get response
+					}
+					return prev + 10;
+				});
+			}, 100);
+
+			const response = await fetch("/api/students/bulk-upload", {
+				method: "POST",
+				body: formData,
+			});
+
+			clearInterval(progressInterval);
+			setUploadProgress(100);
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.error || "Upload failed");
+			}
+
+			const result: UploadResult = await response.json();
+			setUploadResult(result);
+
+			// Show success message and reset file selection after successful upload
+			if (result.success || result.successfulImports > 0) {
+				setShowSuccessMessage(true);
+				setTimeout(() => {
+					setSelectedFile(null);
+					if (fileInputRef.current) {
+						fileInputRef.current.value = "";
+					}
+					setShowSuccessMessage(false);
+				}, 3000);
+			}
+		} catch (error) {
+			console.error("Upload error:", error);
+			setUploadResult({
+				success: false,
+				totalRecords: 0,
+				successfulImports: 0,
+				failedImports: 1,
+				errors: [
+					{
+						row: 1,
+						field: "general",
+						value: "",
+						error: error instanceof Error ? error.message : "Upload failed",
+					},
+				],
+			});
+		} finally {
+			setIsUploading(false);
+			setUploadProgress(0);
 		}
-
-		// Simulate processing result
-		const mockResult: UploadResult = {
-			success: true,
-			totalRecords: 156,
-			successfulImports: 152,
-			failedImports: 4,
-			errors: [
-				{
-					row: 23,
-					field: "email",
-					value: "invalid-email",
-					error: "Invalid email format",
-				},
-				{
-					row: 45,
-					field: "student_id",
-					value: "AGI001",
-					error: "Duplicate student ID",
-				},
-				{
-					row: 67,
-					field: "course",
-					value: "INVALID",
-					error: "Invalid course code",
-				},
-				{
-					row: 89,
-					field: "email",
-					value: "test@test",
-					error: "Email already exists",
-				},
-			],
-		};
-
-		setUploadResult(mockResult);
-		setIsUploading(false);
-		setUploadProgress(0);
 	};
 
 	const downloadTemplate = () => {
-		// In a real implementation, this would generate and download a template file
+		// Generate comprehensive CSV template with sample data
 		const csvContent = [
+			// Header row
 			"student_id,roll_number,email,first_name,last_name,course,division,password,phone,date_of_birth,gender,year_of_study",
-			"AGI001,MBA2024001,john.doe@agi.edu.in,John,Doe,MBA,A,password123,+91-9876543210,1999-05-15,Male,1",
-			"AGI002,MCA2024002,jane.smith@agi.edu.in,Jane,Smith,MCA,B,password123,+91-9876543211,1998-08-20,Female,2",
+			// Sample data rows
+			"AGI001,MBA2024001,john.doe@agi.edu.in,John,Doe,MBA,A,student123,+91-9876543210,1999-05-15,Male,1",
+			"AGI002,MCA2024002,jane.smith@agi.edu.in,Jane,Smith,MCA,B,student123,+91-9876543211,1998-08-20,Female,2",
+			"AGI003,PGDM2024003,alex.johnson@agi.edu.in,Alex,Johnson,PGDM,A,student123,+91-9876543212,1997-12-10,Male,1",
+			"AGI004,BMS2024004,priya.patel@agi.edu.in,Priya,Patel,BMS,C,student123,+91-9876543213,2000-03-25,Female,3",
+			"AGI005,MCA2024005,rahul.kumar@agi.edu.in,Rahul,Kumar,MCA,A,student123,+91-9876543214,1999-11-08,Male,2",
 		].join("\\n");
 
-		const blob = new Blob([csvContent], { type: "text/csv" });
+		const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
 		const url = window.URL.createObjectURL(blob);
 		const link = document.createElement("a");
 		link.href = url;
-		link.download = "student_upload_template.csv";
+		link.download = "student_bulk_upload_template.csv";
 		link.click();
 		window.URL.revokeObjectURL(url);
 	};
@@ -220,6 +245,23 @@ export default function BulkUploadPage() {
 
 				<main className="flex-1 overflow-y-auto p-6">
 					<div className="max-w-6xl mx-auto space-y-6">
+						{/* Success Message */}
+						{showSuccessMessage && (
+							<div className="bg-green-50 border border-green-200 rounded-xl p-4">
+								<div className="flex items-center space-x-3">
+									<CheckCircle className="w-6 h-6 text-green-600" />
+									<div>
+										<h3 className="text-lg font-semibold text-green-900">
+											Upload Successful!
+										</h3>
+										<p className="text-green-700">
+											Student accounts have been created successfully.
+										</p>
+									</div>
+								</div>
+							</div>
+						)}
+
 						{/* Page Header */}
 						<div className="mb-8">
 							<h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -340,7 +382,7 @@ export default function BulkUploadPage() {
 									{/* Action Buttons */}
 									<div className="flex space-x-3 mt-6">
 										<button
-											onClick={simulateUpload}
+											onClick={handleUpload}
 											disabled={!selectedFile || isUploading}
 											className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center">
 											<Upload className="w-5 h-5 mr-2" />
@@ -469,17 +511,44 @@ export default function BulkUploadPage() {
 									))}
 								</div>
 
-								<div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-									<div className="flex items-start space-x-2">
-										<FileText className="w-5 h-5 text-yellow-600 mt-0.5" />
-										<div>
-											<h4 className="font-medium text-yellow-900">
-												Supported Courses
-											</h4>
-											<p className="text-sm text-yellow-800 mt-1">
-												MBA, MCA, PGDM, BMS, B.Arch., BFA Applied Art, B.Voc.
-												Interior Design, M.Arch
-											</p>
+								<div className="mt-6 space-y-4">
+									<div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+										<div className="flex items-start space-x-2">
+											<FileText className="w-5 h-5 text-yellow-600 mt-0.5" />
+											<div>
+												<h4 className="font-medium text-yellow-900">
+													Supported Courses
+												</h4>
+												<p className="text-sm text-yellow-800 mt-1">
+													MBA, MCA, PGDM, BMS, B.Arch., BFA Applied Art, B.Voc.
+													Interior Design, M.Arch
+												</p>
+											</div>
+										</div>
+									</div>
+
+									<div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+										<div className="flex items-start space-x-2">
+											<Info className="w-5 h-5 text-blue-600 mt-0.5" />
+											<div>
+												<h4 className="font-medium text-blue-900">
+													Tips for Successful Upload
+												</h4>
+												<ul className="text-sm text-blue-800 mt-1 space-y-1">
+													<li>• Use unique email addresses for each student</li>
+													<li>
+														• Student IDs must be unique across the system
+													</li>
+													<li>
+														• Date format should be YYYY-MM-DD (e.g.,
+														1999-05-15)
+													</li>
+													<li>• Phone numbers should include country code</li>
+													<li>
+														• Passwords will be hashed securely during upload
+													</li>
+												</ul>
+											</div>
 										</div>
 									</div>
 								</div>
