@@ -33,20 +33,6 @@ export default function Header({ className }: HeaderProps) {
 				</div>
 
 				<div className="flex items-center space-x-4">
-					<button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all duration-200">
-						<Bell className="w-5 h-5" />
-						<span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-					</button>
-
-					<button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all duration-200">
-						<MessageSquare className="w-5 h-5" />
-					</button>
-
-					<button className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-all duration-200 hover:scale-[1.02] shadow-sm hover:shadow-md">
-						<Plus className="w-4 h-4 mr-2" />
-						Add Student
-					</button>
-
 					{/* User Info and Logout */}
 					<div className="flex items-center space-x-3 pl-4 border-l border-gray-200">
 						<div className="flex items-center space-x-2">

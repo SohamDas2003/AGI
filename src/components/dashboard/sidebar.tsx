@@ -11,7 +11,6 @@ import {
 	Settings,
 	Search,
 	Target,
-	Upload,
 	Award,
 	TrendingUp,
 	ClipboardList,
@@ -32,12 +31,6 @@ const navigation = [
 		name: "Students",
 		icon: Users,
 		href: "/dashboard/students",
-		current: false,
-	},
-	{
-		name: "Bulk Upload",
-		icon: Upload,
-		href: "/dashboard/bulk-upload",
 		current: false,
 	},
 	{

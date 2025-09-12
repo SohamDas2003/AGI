@@ -47,33 +47,19 @@ export interface AssessmentAnswer {
 // Student Related Types
 export interface Student {
 	_id: string;
-	studentId: string;
-	rollNumber: string;
-	email: string;
-	firstName: string;
-	lastName: string;
-	course:
-		| "MBA"
-		| "MCA"
-		| "PGDM"
-		| "BMS"
-		| "B.Arch."
-		| "BFA Applied Art"
-		| "B.Voc. Interior Design"
-		| "M.Arch";
-	division: string;
-	phone?: string;
-	dateOfBirth?: Date;
-	gender?: "Male" | "Female" | "Other";
-	yearOfStudy?: number;
-	specialization?: string;
-	status: "active" | "inactive" | "suspended";
+	studentName: string;
+	registrationNo: string;
+	rollNo: string;
+	site: string;
+	batchName: string;
+	academicSession: string;
+	class: string;
+	studentStatus: "Active" | "Inactive" | "Suspended";
 	isFirstLogin: boolean;
 	lastLoginAt?: Date;
 	createdAt: Date;
 	updatedAt: Date;
 	// For display purposes
-	fullName?: string;
 	latestAssessment?: Assessment;
 }
 
