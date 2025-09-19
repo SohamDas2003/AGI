@@ -7,13 +7,11 @@ import {
 	Users,
 	GraduationCap,
 	FileText,
-	BarChart3,
 	Settings,
 	Search,
 	Target,
 	Award,
 	TrendingUp,
-	ClipboardList,
 } from "lucide-react";
 
 interface SidebarProps {

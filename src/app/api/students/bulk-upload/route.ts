@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
-import { User, StudentBulkUpload } from "@/models/User";
+import { User } from "@/models/User";
 import bcrypt from "bcryptjs";
 import * as XLSX from "xlsx";
 
@@ -19,11 +19,23 @@ interface UploadResult {
 	errors: UploadError[];
 }
 
-const SUPPORTED_COURSES = [
-	"MMS",
-	"MCA",
-	"PGDM",
-];
+interface StudentCSVData {
+	student_id: string;
+	roll_number: string;
+	email: string;
+	first_name: string;
+	last_name: string;
+	course: string;
+	division: string;
+	password: string;
+	year_of_study?: number;
+	date_of_birth?: string;
+	phone?: string;
+	address?: string;
+	gender?: string;
+}
+
+const SUPPORTED_COURSES = ["MMS", "MCA", "PGDM"];
 
 const REQUIRED_FIELDS = [
 	"student_id",
@@ -111,14 +123,14 @@ function validateStudentData(
 	return { isValid: errors.length === 0, errors };
 }
 
-async function processExcelFile(buffer: Buffer): Promise<StudentBulkUpload[]> {
+async function processExcelFile(buffer: Buffer): Promise<StudentCSVData[]> {
 	const workbook = XLSX.read(buffer);
 	const sheetName = workbook.SheetNames[0];
 	const worksheet = workbook.Sheets[sheetName];
 
 	// Convert to JSON with header row as keys
 	const data = XLSX.utils.sheet_to_json(worksheet);
-	return data as StudentBulkUpload[];
+	return data as StudentCSVData[];
 }
 
 export async function POST(request: NextRequest) {
@@ -161,7 +173,7 @@ export async function POST(request: NextRequest) {
 
 		// Process file
 		const buffer = Buffer.from(await file.arrayBuffer());
-		let studentsData: StudentBulkUpload[];
+		let studentsData: StudentCSVData[];
 
 		if (file.name.endsWith(".csv")) {
 			// For CSV files, convert to Excel format first
@@ -169,7 +181,7 @@ export async function POST(request: NextRequest) {
 			const workbook = XLSX.read(csvText, { type: "string" });
 			const sheetName = workbook.SheetNames[0];
 			const worksheet = workbook.Sheets[sheetName];
-			studentsData = XLSX.utils.sheet_to_json(worksheet) as StudentBulkUpload[];
+			studentsData = XLSX.utils.sheet_to_json(worksheet) as StudentCSVData[];
 		} else {
 			studentsData = await processExcelFile(buffer);
 		}
@@ -194,12 +206,12 @@ export async function POST(request: NextRequest) {
 
 		// Validate all records first
 		const allErrors: UploadError[] = [];
-		const validStudents: StudentBulkUpload[] = [];
+		const validStudents: StudentCSVData[] = [];
 
 		for (let i = 0; i < studentsData.length; i++) {
 			const student = studentsData[i];
 			const { isValid, errors } = validateStudentData(
-				student as Record<string, unknown>,
+				student as unknown as Record<string, unknown>,
 				i + 2
 			); // +2 because row 1 is header
 
@@ -216,16 +228,19 @@ export async function POST(request: NextRequest) {
 						error: "Email already exists",
 					});
 				} else {
-					// Check for duplicate student ID
+					// Check for duplicate student ID - we'll check by a combination of first name, last name and email
+					// since User interface doesn't have studentId field
 					const existingStudent = await usersCollection.findOne({
-						studentId: student.student_id,
+						firstName: student.first_name,
+						lastName: student.last_name,
+						email: student.email,
 					});
 					if (existingStudent) {
 						allErrors.push({
 							row: i + 2,
 							field: "student_id",
 							value: student.student_id,
-							error: "Student ID already exists",
+							error: "Student with same name and email already exists",
 						});
 					} else {
 						validStudents.push(student);
@@ -248,22 +263,9 @@ export async function POST(request: NextRequest) {
 				const newUser: User = {
 					email: student.email,
 					password: hashedPassword,
-					role: "student",
-					studentId: student.student_id,
-					rollNumber: student.roll_number,
+					role: "STUDENT",
 					firstName: student.first_name,
 					lastName: student.last_name,
-					name: `${student.first_name} ${student.last_name}`,
-					course: student.course,
-					division: student.division,
-					phone: student.phone,
-					dateOfBirth: student.date_of_birth
-						? new Date(student.date_of_birth)
-						: undefined,
-					gender: student.gender,
-					yearOfStudy: student.year_of_study
-						? Number(student.year_of_study)
-						: undefined,
 					createdAt: new Date(),
 					updatedAt: new Date(),
 				};

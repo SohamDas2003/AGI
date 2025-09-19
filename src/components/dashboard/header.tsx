@@ -4,7 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
-import { Bell, Plus, MessageSquare, LogOut, User } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 
 interface HeaderProps {
 	className?: string;

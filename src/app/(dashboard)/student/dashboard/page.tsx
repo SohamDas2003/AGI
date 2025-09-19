@@ -5,17 +5,11 @@ import Sidebar from "@/components/dashboard/sidebar";
 import Header from "@/components/dashboard/header";
 import MetricsCards from "@/components/dashboard/metrics-cards";
 import PerformanceChart from "@/components/dashboard/performance-chart";
-import StudentTable from "@/components/dashboard/student-table";
 import ClassOverview from "@/components/dashboard/class-overview";
 import { BookOpen, Calendar, User } from "lucide-react";
 import { DashboardMetrics } from "@/types";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import {
-	chartData,
-	students,
-	courseAnalytics,
-	skillAnalytics,
-} from "@/lib/mock-data";
+import { chartData, courseAnalytics, skillAnalytics } from "@/lib/mock-data";
 
 interface StudentData {
 	studentName: string;
@@ -192,7 +186,16 @@ function StudentDashboard() {
 							<h2 className="text-xl font-semibold text-gray-900 mb-4">
 								Your Performance History
 							</h2>
-							<StudentTable students={students.slice(0, 1)} />
+							<div className="text-center py-8">
+								<BookOpen className="mx-auto h-12 w-12 text-gray-400" />
+								<h3 className="mt-2 text-sm font-medium text-gray-900">
+									No assessments completed
+								</h3>
+								<p className="mt-1 text-sm text-gray-500">
+									Complete your first assessment to see your performance
+									history.
+								</p>
+							</div>
 						</div>
 
 						{/* Quick Links */}

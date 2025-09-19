@@ -8,12 +8,8 @@ import StudentTable from "@/components/dashboard/student-table";
 import ClassOverview from "@/components/dashboard/class-overview";
 import { Users, GraduationCap, Shield, Activity } from "lucide-react";
 import { DashboardMetrics } from "@/types";
-import {
-	chartData,
-	students,
-	courseAnalytics,
-	skillAnalytics,
-} from "@/lib/mock-data";
+import { User } from "@/models/User";
+import { chartData, courseAnalytics, skillAnalytics } from "@/lib/mock-data";
 
 interface DashboardStats {
 	totalStudents: number;
@@ -29,6 +25,7 @@ function SuperAdminDashboard() {
 		activeStudents: 0,
 		totalUsers: 0,
 	});
+	const [students, setStudents] = useState<User[]>([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -41,21 +38,25 @@ function SuperAdminDashboard() {
 					const admins = usersData.users.filter(
 						(user: { role: string }) => user.role === "ADMIN"
 					);
-					const students = usersData.users.filter(
+					const studentUsers = usersData.users.filter(
 						(user: { role: string }) => user.role === "STUDENT"
 					);
+
+					// Set the student users for the table
+					setStudents(studentUsers || []);
 
 					// Fetch students stats
 					const studentsResponse = await fetch("/api/students/list?limit=1000");
 					if (studentsResponse.ok) {
 						const studentsData = await studentsResponse.json();
-						const activeStudents = studentsData.students.filter(
-							(student: { studentStatus: string }) =>
-								student.studentStatus === "Active"
-						);
+						const activeStudents =
+							studentsData.students?.filter(
+								(student: { studentStatus: string }) =>
+									student.studentStatus === "Active"
+							) || [];
 
 						setStats({
-							totalStudents: students.length,
+							totalStudents: studentUsers.length,
 							totalAdmins: admins.length,
 							activeStudents: activeStudents.length,
 							totalUsers: usersData.users.length,
@@ -64,6 +65,7 @@ function SuperAdminDashboard() {
 				}
 			} catch (error) {
 				console.error("Error fetching stats:", error);
+				setStudents([]);
 			} finally {
 				setLoading(false);
 			}
@@ -102,13 +104,10 @@ function SuperAdminDashboard() {
 
 	return (
 		<div className="flex h-screen bg-gray-50">
-
 			{/* Main Content */}
 			<div className="flex-1 flex flex-col overflow-hidden">
-
 				<main className="flex-1 overflow-y-auto p-6">
 					<div className="max-w-7xl mx-auto space-y-6">
-
 						{/* Additional Stats Cards */}
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
 							<div className="bg-white p-6 rounded-lg shadow">

@@ -35,16 +35,9 @@ export async function GET(request: NextRequest) {
 		const sanitizedStudents = students.map((student) => ({
 			_id: student._id,
 			email: student.email,
-			name: student.name,
-			studentId: student.studentId,
-			rollNumber: student.rollNumber,
 			firstName: student.firstName,
 			lastName: student.lastName,
-			course: student.course,
-			division: student.division,
-			phone: student.phone,
-			gender: student.gender,
-			yearOfStudy: student.yearOfStudy,
+			role: student.role,
 			createdAt: student.createdAt,
 		}));
 

@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { hashPassword } from "@/lib/auth";
 import { User } from "@/models/User";
 
-export async function POST(request: NextRequest) {
+export async function POST() {
 	try {
-		const { client, db } = await connectToDatabase();
+		const { db } = await connectToDatabase();
 
 		// Check if superadmin already exists
 		const existingSuperAdmin = await db
@@ -55,13 +55,15 @@ export async function POST(request: NextRequest) {
 		} else {
 			throw new Error("Failed to create Super Administrator");
 		}
-	} catch (error: any) {
+	} catch (error: unknown) {
 		console.error("Error creating Super Administrator:", error);
+		const errorMessage =
+			error instanceof Error ? error.message : "Unknown error occurred";
 		return NextResponse.json(
 			{
 				success: false,
 				message: "Failed to create Super Administrator",
-				error: error.message,
+				error: errorMessage,
 			},
 			{ status: 500 }
 		);
@@ -70,7 +72,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
 	try {
-		const { client, db } = await connectToDatabase();
+		const { db } = await connectToDatabase();
 
 		// Check if superadmin exists
 		const superAdmin = await db.collection<User>("users").findOne(
@@ -103,13 +105,15 @@ export async function GET() {
 				{ status: 404 }
 			);
 		}
-	} catch (error: any) {
+	} catch (error: unknown) {
 		console.error("Error checking Super Administrator:", error);
+		const errorMessage =
+			error instanceof Error ? error.message : "Unknown error occurred";
 		return NextResponse.json(
 			{
 				success: false,
 				message: "Failed to check Super Administrator",
-				error: error.message,
+				error: errorMessage,
 			},
 			{ status: 500 }
 		);

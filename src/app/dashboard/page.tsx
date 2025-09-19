@@ -3,12 +3,10 @@
 import React from "react";
 import MetricsCards from "@/components/dashboard/metrics-cards";
 import PerformanceChart from "@/components/dashboard/performance-chart";
-import StudentTable from "@/components/dashboard/student-table";
 import ClassOverview from "@/components/dashboard/class-overview";
 import {
 	dashboardMetrics,
 	chartData,
-	students,
 	courseAnalytics,
 	skillAnalytics,
 } from "@/lib/mock-data";
@@ -43,8 +41,18 @@ export default function Dashboard() {
 				</div>
 			</div>
 
-			{/* Student Table */}
-			<StudentTable students={students} />
+			{/* Placeholder for Student Data */}
+			<div className="bg-white p-6 rounded-lg shadow">
+				<h2 className="text-xl font-semibold text-gray-900 mb-4">
+					Student Overview
+				</h2>
+				<div className="text-center py-8">
+					<p className="text-gray-500">
+						Student data will be displayed here when integrated with the
+						database.
+					</p>
+				</div>
+			</div>
 		</div>
 	);
 }

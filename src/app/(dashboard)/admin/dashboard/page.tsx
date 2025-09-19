@@ -10,12 +10,8 @@ import ClassOverview from "@/components/dashboard/class-overview";
 import { GraduationCap, Users } from "lucide-react";
 import { DashboardMetrics } from "@/types";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import {
-	chartData,
-	students,
-	courseAnalytics,
-	skillAnalytics,
-} from "@/lib/mock-data";
+import { User } from "@/models/User";
+import { chartData, courseAnalytics, skillAnalytics } from "@/lib/mock-data";
 
 interface DashboardStats {
 	totalStudents: number;
@@ -27,6 +23,7 @@ function AdminDashboard() {
 		totalStudents: 0,
 		activeStudents: 0,
 	});
+	const [students, setStudents] = useState<User[]>([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -35,18 +32,23 @@ function AdminDashboard() {
 				const response = await fetch("/api/students/list?limit=1000");
 				if (response.ok) {
 					const data = await response.json();
-					const activeStudents = data.students.filter(
-						(student: { studentStatus: string }) =>
-							student.studentStatus === "Active"
-					);
+					// Set the actual students data
+					setStudents(data.students || []);
+
+					const activeStudents =
+						data.students?.filter(
+							(student: { role: string }) => student.role === "STUDENT"
+						) || [];
 
 					setStats({
-						totalStudents: data.students.length,
+						totalStudents: data.students?.length || 0,
 						activeStudents: activeStudents.length,
 					});
 				}
 			} catch (error) {
 				console.error("Error fetching stats:", error);
+				// Set empty array on error
+				setStudents([]);
 			} finally {
 				setLoading(false);
 			}
