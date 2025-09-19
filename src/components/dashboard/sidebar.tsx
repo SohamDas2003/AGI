@@ -40,18 +40,6 @@ const navigation = [
 		current: false,
 	},
 	{
-		name: "Results",
-		icon: ClipboardList,
-		href: "/dashboard/results",
-		current: false,
-	},
-	{
-		name: "Analytics",
-		icon: BarChart3,
-		href: "/dashboard/analytics",
-		current: false,
-	},
-	{
 		name: "Reports",
 		icon: FileText,
 		href: "/dashboard/reports",

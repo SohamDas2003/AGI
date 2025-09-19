@@ -1,36 +1,224 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AIMSR Role-Based Management System
+
+A comprehensive role-based student management system built with Next.js, MongoDB, and JWT authentication.
+
+## Features
+
+- **Role-Based Access Control**: SUPERADMIN, ADMIN, and STUDENT roles with appropriate permissions
+- **Secure Authentication**: JWT-based authentication with bcrypt password hashing
+- **User Management**: Create, update, delete users with role-specific permissions
+- **Student Management**: Separate student collection with detailed academic information
+- **Bulk Student Upload**: Support for CSV/Excel file upload for mass student creation
+- **Responsive Dashboard**: Shared dashboard layout with role-specific navigation
+- **Seed System**: Initial superadmin creation and sample data seeding
+
+## Architecture
+
+### User Roles & Permissions
+
+#### SUPERADMIN
+
+- Full system access
+- Manage administrators
+- Manage students
+- System settings
+- Access all dashboard features
+
+#### ADMIN
+
+- Manage students
+- Create student accounts
+- View student records
+- Limited system settings
+
+#### STUDENT
+
+- View personal dashboard
+- Access profile information
+- View courses and attendance
+- Read-only access to personal data
+
+### Database Collections
+
+1. **users**: Authentication and basic user information
+
+   - `_id`, `email`, `password`, `role`, `firstName`, `lastName`
+   - Used for login and role-based access control
+
+2. **students**: Detailed student academic information
+   - Links to users collection via `userId`
+   - Contains academic details like registration number, batch, etc.
+
+## Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd frontend
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Environment Setup**
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   Edit `.env.local` with your configuration:
+
+   ```env
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET=your_super_secret_jwt_key_min_32_chars
+   SUPERADMIN_EMAIL=admin@aimsr.edu.in
+   SUPERADMIN_PASSWORD=SuperAdmin@123
+   SUPERADMIN_FIRSTNAME=Super
+   SUPERADMIN_LASTNAME=Administrator
+   SEED_SECRET_KEY=your_seed_secret_key
+   ```
+
+4. **Database Setup**
+   - Create a MongoDB database
+   - Update the MONGODB_URI in your .env.local file
 
 ## Getting Started
 
-First, run the development server:
+1. **Start the development server**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+   ```bash
+   npm run dev
+   ```
+
+2. **Seed the SUPERADMIN user**
+
+   ```bash
+   curl -X POST http://localhost:3000/api/seed/superadmin \
+     -H "Authorization: Bearer your_seed_secret_key"
+   ```
+
+3. **Seed sample students (optional)**
+
+   ```bash
+   curl -X POST http://localhost:3000/api/seed/students \
+     -H "Authorization: Bearer your_seed_secret_key"
+   ```
+
+4. **Login**
+   - Navigate to http://localhost:3000/login
+   - Use the SUPERADMIN credentials from your .env.local file
+
+## API Endpoints
+
+### Authentication
+
+- `POST /api/auth/login` - User login
+- `POST /api/auth/logout` - User logout
+- `GET /api/auth/me` - Get current user information
+
+### User Management
+
+- `POST /api/users/create` - Create new user (SUPERADMIN/ADMIN)
+- `GET /api/users/list` - List users with pagination
+- `PUT /api/users/update/[id]` - Update user information
+- `DELETE /api/users/delete/[id]` - Delete user
+
+### Student Management
+
+- `POST /api/students/create` - Create new student
+- `GET /api/students/list` - List students with pagination and search
+- `POST /api/students/bulk-upload` - Bulk upload students from CSV
+
+### Seeding
+
+- `POST /api/seed/superadmin` - Create initial SUPERADMIN user
+- `POST /api/seed/students` - Seed sample student data
+
+## Route Structure
+
+```
+app/
+├── login/                     # Login page
+├── unauthorized/              # Unauthorized access page
+├── (dashboard)/              # Protected dashboard layout
+│   ├── layout.tsx            # Shared dashboard theme
+│   ├── superadmin/
+│   │   ├── dashboard/        # SUPERADMIN dashboard
+│   │   ├── create-admin/     # Create admin users
+│   │   ├── create-student/   # Create students
+│   │   ├── manage-admins/    # Manage administrators
+│   │   ├── manage-students/  # Manage students
+│   │   └── settings/         # System settings
+│   ├── admin/
+│   │   ├── dashboard/        # ADMIN dashboard
+│   │   ├── create-student/   # Create students
+│   │   ├── manage-students/  # Manage students
+│   │   └── settings/         # Admin settings
+│   └── student/
+│       ├── dashboard/        # STUDENT dashboard
+│       ├── profile/          # Student profile
+│       ├── courses/          # Course information
+│       └── attendance/       # Attendance records
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Security Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **JWT Authentication**: Secure token-based authentication
+- **Password Hashing**: bcrypt with salt rounds for password security
+- **Role-Based Middleware**: Server-side route protection
+- **Input Validation**: Comprehensive input validation on all endpoints
+- **CORS Protection**: Configured for secure cross-origin requests
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Development
 
-## Learn More
+### File Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/                      # Next.js app router
+├── components/               # Reusable UI components
+├── contexts/                 # React contexts
+├── lib/                      # Utility libraries
+│   ├── auth.ts              # Authentication utilities
+│   ├── jwt.ts               # JWT utilities
+│   ├── mongodb.ts           # Database connection
+│   └── seed-students.ts     # Student seeding utilities
+├── models/                   # TypeScript interfaces
+└── types/                    # Type definitions
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Development Commands
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run dev         # Start development server
+npm run build       # Build for production
+npm run start       # Start production server
+npm run lint        # Run ESLint
+```
 
-## Deploy on Vercel
+## Production Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Environment Variables**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   - Set strong JWT secrets
+   - Use production MongoDB URI
+   - Update SUPERADMIN credentials
+   - Set NODE_ENV to production
+
+2. **Security Considerations**
+   - Change all default passwords
+   - Use strong JWT secrets (minimum 32 characters)
+   - Enable HTTPS in production
+   - Regular security updates
+
+## License
+
+This project is licensed under the MIT License.
+
+## Support
+
+For support and questions, please contact the development team.

@@ -73,14 +73,9 @@ export function sanitizeString(input: string): string {
  */
 export function isValidCourse(course: string): boolean {
 	const supportedCourses = [
-		"MBA",
+		"MMS",
 		"MCA",
 		"PGDM",
-		"BMS",
-		"B.Arch.",
-		"BFA Applied Art",
-		"B.Voc. Interior Design",
-		"M.Arch",
 	];
 	return supportedCourses.includes(course);
 }
@@ -96,14 +91,9 @@ export const BULK_UPLOAD_CONSTANTS = {
 	MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
 	MAX_RECORDS: 1000,
 	SUPPORTED_COURSES: [
-		"MBA",
+		"MMS",
 		"MCA",
 		"PGDM",
-		"BMS",
-		"B.Arch.",
-		"BFA Applied Art",
-		"B.Voc. Interior Design",
-		"M.Arch",
 	],
 	REQUIRED_FIELDS: [
 		"student_id",

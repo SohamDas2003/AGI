@@ -20,14 +20,9 @@ interface UploadResult {
 }
 
 const SUPPORTED_COURSES = [
-	"MBA",
+	"MMS",
 	"MCA",
 	"PGDM",
-	"BMS",
-	"B.Arch.",
-	"BFA Applied Art",
-	"B.Voc. Interior Design",
-	"M.Arch",
 ];
 
 const REQUIRED_FIELDS = [

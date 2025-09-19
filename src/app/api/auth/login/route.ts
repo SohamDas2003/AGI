@@ -10,11 +10,11 @@ export async function POST(request: NextRequest) {
 		const { email, password, userType } = body;
 
 		// Validate input
-		if (!email || !password || !userType) {
+		if (!email || !password) {
 			return NextResponse.json(
 				{
 					success: false,
-					message: "Email, password, and user type are required",
+					message: "Email and password are required",
 				} as LoginResponse,
 				{ status: 400 }
 			);
@@ -24,11 +24,16 @@ export async function POST(request: NextRequest) {
 		const { db } = await connectToDatabase();
 		const usersCollection = db.collection<User>("users");
 
-		// Find user by email and role
-		const user = await usersCollection.findOne({
-			email: email.toLowerCase(),
-			role: userType,
-		});
+		// Find user by email and role (if userType is provided)
+		const query: { email: string; role?: "SUPERADMIN" | "ADMIN" | "STUDENT" } =
+			{
+				email: email.toLowerCase(),
+			};
+		if (userType) {
+			query.role = userType as "SUPERADMIN" | "ADMIN" | "STUDENT";
+		}
+
+		const user = await usersCollection.findOne(query);
 
 		if (!user) {
 			return NextResponse.json(
@@ -57,6 +62,7 @@ export async function POST(request: NextRequest) {
 			userId: user._id!.toString(),
 			email: user.email,
 			role: user.role,
+			name: `${user.firstName} ${user.lastName}`,
 		});
 
 		// Return success response
@@ -66,8 +72,9 @@ export async function POST(request: NextRequest) {
 			user: {
 				email: user.email,
 				role: user.role,
-				name: user.name,
-				studentId: user.studentId,
+				firstName: user.firstName,
+				lastName: user.lastName,
+				userId: user._id!.toString(),
 			},
 			token,
 		};

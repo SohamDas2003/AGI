@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import Sidebar from "@/components/dashboard/sidebar";
-import Header from "@/components/dashboard/header";
 import {
 	Upload,
 	Download,
@@ -48,13 +46,8 @@ interface StudentFormData {
 
 const batchNames = [
 	"MCA 2024-26",
-	"MBA 2024-26",
+	"MMS 2024-26",
 	"PGDM 2024-26",
-	"BMS 2024-26",
-	"B.Arch. 2024-26",
-	"BFA Applied Art 2024-26",
-	"B.Voc. Interior Design 2024-26",
-	"M.Arch 2024-26",
 ];
 
 const academicSessions = [
@@ -1066,69 +1059,59 @@ SAMPLE STUDENT NAME,AIMSR/MCA/2024-26/XXX,AIMSR/MCA/2024-26/XXX,AIMSR-Aditya Ins
 	);
 
 	return (
-		<div className="flex h-screen bg-gray-50">
-			<Sidebar />
-
-			<div className="flex-1 flex flex-col">
-				<Header />
-				<main className="py-6 overflow-auto flex-1">
-					<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-						{/* Header */}
-						<div className="mb-8">
-							<div className="flex items-center justify-between">
-								<div>
-									<h1 className="text-2xl font-bold text-gray-900">
-										Student Management
-									</h1>
-									<p className="text-gray-600">
-										Manage students, add new students, and upload student data
-										in bulk
-									</p>
-								</div>
-
-								{/* View Navigation */}
-								<div className="flex rounded-lg border border-gray-300 p-1 bg-white">
-									<button
-										onClick={() => setCurrentView("overview")}
-										className={cn(
-											"px-3 py-2 text-sm font-medium rounded-md transition-colors",
-											currentView === "overview"
-												? "bg-blue-600 text-white"
-												: "text-gray-700 hover:text-gray-900"
-										)}>
-										Overview
-									</button>
-									<button
-										onClick={() => setCurrentView("add")}
-										className={cn(
-											"px-3 py-2 text-sm font-medium rounded-md transition-colors",
-											currentView === "add"
-												? "bg-blue-600 text-white"
-												: "text-gray-700 hover:text-gray-900"
-										)}>
-										Add Student
-									</button>
-									<button
-										onClick={() => setCurrentView("bulk")}
-										className={cn(
-											"px-3 py-2 text-sm font-medium rounded-md transition-colors",
-											currentView === "bulk"
-												? "bg-blue-600 text-white"
-												: "text-gray-700 hover:text-gray-900"
-										)}>
-										Bulk Upload
-									</button>
-								</div>
-							</div>
-						</div>
-
-						{/* Content */}
-						{currentView === "overview" && renderOverview()}
-						{currentView === "add" && renderAddForm()}
-						{currentView === "bulk" && renderBulkUpload()}
+		<div className="mx-auto max-w-7xl space-y-6">
+			{/* Header */}
+			<div className="mb-8">
+				<div className="flex items-center justify-between">
+					<div>
+						<h1 className="text-2xl font-bold text-gray-900">
+							Student Management
+						</h1>
+						<p className="text-gray-600">
+							Manage students, add new students, and upload student data in bulk
+						</p>
 					</div>
-				</main>
+
+					{/* View Navigation */}
+					<div className="flex rounded-lg border border-gray-300 p-1 bg-white">
+						<button
+							onClick={() => setCurrentView("overview")}
+							className={cn(
+								"px-3 py-2 text-sm font-medium rounded-md transition-colors",
+								currentView === "overview"
+									? "bg-blue-600 text-white"
+									: "text-gray-700 hover:text-gray-900"
+							)}>
+							Overview
+						</button>
+						<button
+							onClick={() => setCurrentView("add")}
+							className={cn(
+								"px-3 py-2 text-sm font-medium rounded-md transition-colors",
+								currentView === "add"
+									? "bg-blue-600 text-white"
+									: "text-gray-700 hover:text-gray-900"
+							)}>
+							Add Student
+						</button>
+						<button
+							onClick={() => setCurrentView("bulk")}
+							className={cn(
+								"px-3 py-2 text-sm font-medium rounded-md transition-colors",
+								currentView === "bulk"
+									? "bg-blue-600 text-white"
+									: "text-gray-700 hover:text-gray-900"
+							)}>
+							Bulk Upload
+						</button>
+					</div>
+				</div>
 			</div>
+
+			{/* Content */}
+			{currentView === "overview" && renderOverview()}
+			{currentView === "add" && renderAddForm()}
+			{currentView === "bulk" && renderBulkUpload()}
 		</div>
 	);
 }

@@ -28,14 +28,9 @@ const statusStyles = {
 };
 
 const courseColors = {
-	MBA: "bg-blue-100 text-blue-800",
+	MMS: "bg-blue-100 text-blue-800",
 	MCA: "bg-purple-100 text-purple-800",
 	PGDM: "bg-green-100 text-green-800",
-	BMS: "bg-orange-100 text-orange-800",
-	"B.Arch.": "bg-pink-100 text-pink-800",
-	"BFA Applied Art": "bg-indigo-100 text-indigo-800",
-	"B.Voc. Interior Design": "bg-teal-100 text-teal-800",
-	"M.Arch": "bg-red-100 text-red-800",
 };
 
 export default function StudentTable({

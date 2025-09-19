@@ -294,7 +294,7 @@ export const students: Student[] = [
 
 export const courseAnalytics: CourseAnalytics[] = [
 	{
-		course: "MBA",
+		course: "MMS",
 		totalStudents: 156,
 		averageScore: 79.3,
 		placementRate: 84.6,
@@ -313,20 +313,6 @@ export const courseAnalytics: CourseAnalytics[] = [
 		averageScore: 77.8,
 		placementRate: 78.4,
 		topPerformers: 19,
-	},
-	{
-		course: "BMS",
-		totalStudents: 201,
-		averageScore: 76.2,
-		placementRate: 72.1,
-		topPerformers: 28,
-	},
-	{
-		course: "B.Arch.",
-		totalStudents: 67,
-		averageScore: 81.5,
-		placementRate: 89.6,
-		topPerformers: 12,
 	},
 ];
 

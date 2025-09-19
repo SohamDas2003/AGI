@@ -56,8 +56,8 @@ export async function GET(request: NextRequest) {
 			user: {
 				email: user.email,
 				role: user.role,
-				name: user.name,
-				studentId: user.studentId,
+				firstName: user.firstName,
+				lastName: user.lastName,
 			},
 		});
 	} catch (error) {

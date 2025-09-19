@@ -60,14 +60,9 @@ export default function HomePage() {
 	];
 
 	const programs = [
-		"MBA",
+		"MMS",
 		"MCA",
 		"PGDM",
-		"BMS",
-		"B.Arch.",
-		"BFA Applied Art",
-		"B.Voc. Interior Design",
-		"M.Arch",
 	];
 
 	const features = [

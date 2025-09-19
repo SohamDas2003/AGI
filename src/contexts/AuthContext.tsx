@@ -10,7 +10,9 @@ import React, {
 
 interface User {
 	email: string;
-	role: "admin" | "student";
+	role: "SUPERADMIN" | "ADMIN" | "STUDENT";
+	firstName?: string;
+	lastName?: string;
 	name?: string;
 	studentId?: string;
 }
@@ -21,8 +23,8 @@ interface AuthContextType {
 	login: (
 		email: string,
 		password: string,
-		userType: "admin" | "student"
-	) => Promise<boolean>;
+		userType?: "SUPERADMIN" | "ADMIN" | "STUDENT"
+	) => Promise<User | null>;
 	logout: () => Promise<void>;
 	checkAuth: () => Promise<void>;
 }
@@ -68,29 +70,59 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const login = async (
 		email: string,
 		password: string,
-		userType: "admin" | "student"
-	): Promise<boolean> => {
+		userType?: "SUPERADMIN" | "ADMIN" | "STUDENT"
+	): Promise<User | null> => {
 		try {
-			const response = await fetch("/api/auth/login", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				credentials: "include",
-				body: JSON.stringify({ email, password, userType }),
-			});
+			// If userType is not provided, try to determine it by attempting login with different roles
+			if (!userType) {
+				// Try SUPERADMIN first, then ADMIN, then STUDENT
+				const rolesToTry: ("SUPERADMIN" | "ADMIN" | "STUDENT")[] = [
+					"SUPERADMIN",
+					"ADMIN",
+					"STUDENT",
+				];
 
-			const data = await response.json();
+				for (const role of rolesToTry) {
+					const response = await fetch("/api/auth/login", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						credentials: "include",
+						body: JSON.stringify({ email, password, userType: role }),
+					});
 
-			if (data.success && data.user) {
-				setUser(data.user);
-				return true;
+					const data = await response.json();
+
+					if (data.success && data.user) {
+						setUser(data.user);
+						return data.user;
+					}
+				}
+				return null;
+			} else {
+				// Use provided userType
+				const response = await fetch("/api/auth/login", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
+					body: JSON.stringify({ email, password, userType }),
+				});
+
+				const data = await response.json();
+
+				if (data.success && data.user) {
+					setUser(data.user);
+					return data.user;
+				}
+
+				return null;
 			}
-
-			return false;
 		} catch (error) {
 			console.error("Login failed:", error);
-			return false;
+			return null;
 		}
 	};
 

@@ -4,41 +4,46 @@ export interface User {
 	_id?: ObjectId | string;
 	email: string;
 	password: string;
-	role: "admin" | "student";
-	name?: string;
-	studentId?: string;
-	rollNumber?: string;
-	firstName?: string;
-	lastName?: string;
-	course?: string;
-	division?: string;
-	phone?: string;
-	dateOfBirth?: Date;
-	gender?: string;
-	yearOfStudy?: number;
+	role: "SUPERADMIN" | "ADMIN" | "STUDENT";
+	firstName: string;
+	lastName: string;
+	createdAt?: Date;
+	updatedAt?: Date;
+}
+
+export interface Student {
+	_id?: ObjectId | string;
+	userId: ObjectId | string; // Reference to User collection
+	studentName: string;
+	registrationNo: string;
+	rollNo: string;
+	site: string;
+	batchName: string;
+	academicSession: string;
+	class: string;
+	studentStatus: "Active" | "Inactive";
+	email: string;
 	createdAt?: Date;
 	updatedAt?: Date;
 }
 
 export interface StudentBulkUpload extends Record<string, unknown> {
-	student_id: string;
-	roll_number: string;
-	email: string;
-	first_name: string;
-	last_name: string;
-	course: string;
-	division: string;
-	password: string;
-	phone?: string;
-	date_of_birth?: string;
-	gender?: string;
-	year_of_study?: number;
+	"Student Name": string;
+	"Registration No": string;
+	"Roll No": string;
+	Site: string;
+	"Batch Name": string;
+	"Academic Session": string;
+	Class: string;
+	"Student Status": string;
+	Email: string;
+	Password: string;
 }
 
 export interface LoginRequest {
 	email: string;
 	password: string;
-	userType: "admin" | "student";
+	userType?: string; // Optional, will determine role from DB
 }
 
 export interface LoginResponse {
@@ -46,9 +51,10 @@ export interface LoginResponse {
 	message: string;
 	user?: {
 		email: string;
-		role: "admin" | "student";
-		name?: string;
-		studentId?: string;
+		role: "SUPERADMIN" | "ADMIN" | "STUDENT";
+		firstName: string;
+		lastName: string;
+		userId: string;
 	};
 	token?: string;
 }
