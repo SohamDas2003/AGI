@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
 		const { email, password, firstName, lastName } = body;
 
 		// Validate required fields
-		if (!email || !password || !firstName || !lastName) {
+		if (!(email && password && firstName && lastName)) {
 			return NextResponse.json(
 				{
 					success: false,
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
 
 		// Validate email format
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		if (!emailRegex.test(email)) {
+		if (!emailRegex.test(String(email || ""))) {
 			return NextResponse.json(
 				{
 					success: false,
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
 		// Check if user with this email already exists
 		const existingUser = await db
 			.collection<User>("users")
-			.findOne({ email: email.toLowerCase() });
+			.findOne({ email: String(email || "").toLowerCase() });
 
 		if (existingUser) {
 			return NextResponse.json(
@@ -62,11 +62,11 @@ export async function POST(request: NextRequest) {
 
 		// Create admin user data
 		const adminData: User = {
-			email: email.toLowerCase(),
+			email: String(email || "").toLowerCase(),
 			password: await hashPassword(password),
 			role: "ADMIN",
-			firstName: firstName.trim(),
-			lastName: lastName.trim(),
+			firstName: (firstName || "").trim(),
+			lastName: (lastName || "").trim(),
 			createdAt: new Date(),
 			updatedAt: new Date(),
 		};

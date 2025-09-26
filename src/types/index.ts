@@ -44,6 +44,14 @@ export interface AssessmentAnswer {
 	timeSpent: number;
 }
 
+// New Assessment Answer Types for Scale-based Assessment
+export interface ScaleAssessmentAnswer {
+	questionId: string;
+	sectionId: string;
+	selectedValue: number; // 1-5 scale
+	timeSpentOnQuestion?: number;
+}
+
 // Student Related Types
 export interface Student {
 	_id: string;
@@ -163,16 +171,25 @@ export interface AssessmentQuestion {
 	points: number;
 }
 
-// New Assessment Creation Types
+// New Section-Based Assessment Types
+export interface CreateAssessmentSection {
+	id: string;
+	title: string;
+	description?: string;
+	questions: CreateAssessmentQuestion[];
+}
+
 export interface CreateAssessmentQuestion {
 	id: string;
 	text: string;
-	category:
-		| "domainSkills"
-		| "digital"
-		| "interpersonal"
-		| "communication"
-		| "problemSolving";
+	isRequired: boolean;
+	scaleOptions: {
+		min: number;
+		max: number;
+		minLabel: string;
+		maxLabel: string;
+		labels: string[];
+	};
 }
 
 export interface CreateAssessmentForm {
@@ -180,19 +197,71 @@ export interface CreateAssessmentForm {
 	description: string;
 	course: "MCA" | "MMS" | "PGDM" | "ALL" | "";
 	batch: "2024-26" | "2025-27" | "";
-	questions: {
-		domainSkills: CreateAssessmentQuestion[];
-		digital: CreateAssessmentQuestion[];
-		interpersonal: CreateAssessmentQuestion[];
-		communication: CreateAssessmentQuestion[];
-		problemSolving: CreateAssessmentQuestion[];
-	};
+	instructions?: string;
+	timeLimit?: number;
+	allowMultipleAttempts: boolean;
+	maxAttempts?: number;
+	sections: CreateAssessmentSection[];
 }
 
-export interface SkillCategory {
-	key: keyof CreateAssessmentForm["questions"];
-	label: string;
-	description: string;
+export interface AssessmentSection {
+	_id: string;
+	title: string;
+	description?: string;
+	order: number;
+	questions: AssessmentQuestion[];
+}
+
+// Assessment Response Types
+export interface ScaleAssessmentAnswer {
+	questionId: string;
+	sectionId: string;
+	selectedValue: number; // 1-5 scale
+	timeSpentOnQuestion?: number;
+}
+
+export interface AssessmentResponse {
+	_id: string;
+	assessmentId: string;
+	studentId: string;
+	attemptNumber: number;
+	answers: ScaleAssessmentAnswer[];
+	status: "not_started" | "in_progress" | "completed" | "submitted";
+	startedAt?: Date;
+	completedAt?: Date;
+	submittedAt?: Date;
+	totalTimeSpent: number; // Total time spent in seconds
+}
+
+// Assessment Analytics Types
+export interface QuestionAnalytics {
+	questionId: string;
+	questionText: string;
+	averageScore: number;
+	responseDistribution: {
+		value: number;
+		count: number;
+		percentage: number;
+	}[];
+}
+
+export interface SectionAnalytics {
+	sectionId: string;
+	sectionTitle: string;
+	averageScore: number;
+	responseCount: number;
+	questionAnalytics: QuestionAnalytics[];
+}
+
+export interface AssessmentAnalytics {
+	_id: string;
+	assessmentId: string;
+	totalResponses: number;
+	completionRate: number;
+	averageTimeSpent: number;
+	sectionAnalytics: SectionAnalytics[];
+	overallAverageScore: number;
+	lastUpdated: Date;
 }
 
 // Filter and Search Types

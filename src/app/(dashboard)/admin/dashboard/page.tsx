@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Sidebar from "@/components/dashboard/sidebar";
-import Header from "@/components/dashboard/header";
 import MetricsCards from "@/components/dashboard/metrics-cards";
 import PerformanceChart from "@/components/dashboard/performance-chart";
 import StudentTable from "@/components/dashboard/student-table";
@@ -76,94 +74,73 @@ function AdminDashboard() {
 
 	if (loading) {
 		return (
-			<div className="flex h-screen bg-gray-50">
-				<Sidebar />
-				<div className="flex-1 flex flex-col overflow-hidden">
-					<Header />
-					<main className="flex-1 overflow-y-auto p-6">
-						<div className="flex items-center justify-center h-64">
-							<div className="text-lg">Loading dashboard...</div>
-						</div>
-					</main>
-				</div>
+			<div className="flex items-center justify-center h-64">
+				<div className="text-lg">Loading dashboard...</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="flex h-screen bg-gray-50">
-			{/* Sidebar */}
-			<Sidebar />
+		<div className="max-w-7xl mx-auto space-y-6">
+			{/* Page Header */}
+			<div className="mb-8">
+				<h1 className="text-3xl font-bold text-gray-900 mb-2">
+					Administrator Dashboard
+				</h1>
+				<p className="text-gray-600">
+					Manage students and monitor academic activities across the institution
+				</p>
+			</div>
 
-			{/* Main Content */}
-			<div className="flex-1 flex flex-col overflow-hidden">
-				<Header />
+			{/* Metrics Cards */}
+			<MetricsCards metrics={adminMetrics} />
 
-				<main className="flex-1 overflow-y-auto p-6">
-					<div className="max-w-7xl mx-auto space-y-6">
-						{/* Page Header */}
-						<div className="mb-8">
-							<h1 className="text-3xl font-bold text-gray-900 mb-2">
-								Administrator Dashboard
-							</h1>
-							<p className="text-gray-600">
-								Manage students and monitor academic activities across the
-								institution
-							</p>
+			{/* Charts and Course Overview */}
+			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+				<div className="lg:col-span-2">
+					<PerformanceChart data={chartData} />
+				</div>
+				<div className="lg:col-span-1">
+					<ClassOverview
+						courses={courseAnalytics}
+						skills={skillAnalytics}
+					/>
+				</div>
+			</div>
+
+			{/* Student Table */}
+			<StudentTable students={students} />
+
+			{/* Quick Actions */}
+			<div className="bg-white p-6 rounded-lg shadow">
+				<h2 className="text-xl font-semibold text-gray-900 mb-4">
+					Quick Actions
+				</h2>
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+					<a
+						href="/admin/create-student"
+						className="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+						<div className="flex items-center">
+							<GraduationCap className="h-5 w-5 text-green-600 mr-3" />
+							<span className="font-medium">Add New Student</span>
 						</div>
+						<p className="text-sm text-gray-600 mt-1">
+							Register a new student in the system
+						</p>
+					</a>
 
-						{/* Metrics Cards */}
-						<MetricsCards metrics={adminMetrics} />
-
-						{/* Charts and Course Overview */}
-						<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-							<div className="lg:col-span-2">
-								<PerformanceChart data={chartData} />
-							</div>
-							<div className="lg:col-span-1">
-								<ClassOverview
-									courses={courseAnalytics}
-									skills={skillAnalytics}
-								/>
-							</div>
+					<a
+						href="/admin/manage-students"
+						className="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+						<div className="flex items-center">
+							<Users className="h-5 w-5 text-blue-600 mr-3" />
+							<span className="font-medium">Manage Students</span>
 						</div>
-
-						{/* Student Table */}
-						<StudentTable students={students} />
-
-						{/* Quick Actions */}
-						<div className="bg-white p-6 rounded-lg shadow">
-							<h2 className="text-xl font-semibold text-gray-900 mb-4">
-								Quick Actions
-							</h2>
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-								<a
-									href="/admin/create-student"
-									className="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-									<div className="flex items-center">
-										<GraduationCap className="h-5 w-5 text-green-600 mr-3" />
-										<span className="font-medium">Add New Student</span>
-									</div>
-									<p className="text-sm text-gray-600 mt-1">
-										Register a new student in the system
-									</p>
-								</a>
-
-								<a
-									href="/admin/manage-students"
-									className="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-									<div className="flex items-center">
-										<Users className="h-5 w-5 text-blue-600 mr-3" />
-										<span className="font-medium">Manage Students</span>
-									</div>
-									<p className="text-sm text-gray-600 mt-1">
-										View and manage student records
-									</p>
-								</a>
-							</div>
-						</div>
-					</div>
-				</main>
+						<p className="text-sm text-gray-600 mt-1">
+							View and manage student records
+						</p>
+					</a>
+				</div>
 			</div>
 		</div>
 	);

@@ -3,6 +3,16 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { hashPassword } from "@/lib/auth";
 import { User, Student } from "@/models/User";
 
+// Extract course from batch name
+const extractCourseFromBatch = (batchName: string): "MCA" | "MMS" | "PGDM" => {
+	const upperBatch = batchName.toUpperCase();
+	if (upperBatch.includes("MCA")) return "MCA";
+	if (upperBatch.includes("MMS")) return "MMS";
+	if (upperBatch.includes("PGDM")) return "PGDM";
+	// Default to MCA if we can't determine
+	return "MCA";
+};
+
 export async function POST(request: NextRequest) {
 	try {
 		const body = await request.json();
@@ -124,6 +134,7 @@ export async function POST(request: NextRequest) {
 			batchName,
 			academicSession,
 			class: studentClass,
+			course: extractCourseFromBatch(batchName),
 			studentStatus: studentStatus as "Active" | "Inactive",
 			email: email.toLowerCase(),
 			createdAt: new Date(),

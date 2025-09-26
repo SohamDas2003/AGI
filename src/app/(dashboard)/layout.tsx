@@ -5,18 +5,14 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
 	LayoutDashboard,
-	Users,
 	UserPlus,
-	Settings,
 	LogOut,
 	GraduationCap,
-	BookOpen,
-	Calendar,
 	User,
 	Shield,
 	FileText,
 	Target,
-	Award,
+	Users,
 } from "lucide-react";
 
 interface User {
@@ -35,7 +31,7 @@ interface NavigationItem {
 }
 
 const navigationItems: NavigationItem[] = [
-	// SUPERADMIN Navigation
+	// SUPERADMIN Navigation (only existing pages)
 	{
 		label: "Dashboard",
 		href: "/superadmin/dashboard",
@@ -55,25 +51,13 @@ const navigationItems: NavigationItem[] = [
 		roles: ["SUPERADMIN"],
 	},
 	{
-		label: "Manage Students",
-		href: "/superadmin/manage-students",
-		icon: GraduationCap,
-		roles: ["SUPERADMIN"],
-	},
-	{
-		label: "Reports",
-		href: "/superadmin/reports",
-		icon: FileText,
-		roles: ["SUPERADMIN"],
-	},
-	{
-		label: "Settings",
-		href: "/superadmin/settings",
-		icon: Settings,
+		label: "View Students",
+		href: "/superadmin/students",
+		icon: Users,
 		roles: ["SUPERADMIN"],
 	},
 
-	// ADMIN Navigation
+	// ADMIN Navigation (only existing pages)
 	{
 		label: "Dashboard",
 		href: "/admin/dashboard",
@@ -87,37 +71,25 @@ const navigationItems: NavigationItem[] = [
 		roles: ["ADMIN"],
 	},
 	{
-		label: "Students",
-		href: "/dashboard/students",
+		label: "View Students",
+		href: "/admin/students",
 		icon: Users,
 		roles: ["ADMIN"],
 	},
 	{
-		label: "Assessments",
-		href: "/dashboard/assessments",
-		icon: Target,
-		roles: ["ADMIN"],
-	},
-	{
-		label: "Reports",
-		href: "/dashboard/reports",
+		label: "Create Assessment",
+		href: "/admin/create-assessment",
 		icon: FileText,
 		roles: ["ADMIN"],
 	},
 	{
-		label: "Placement",
-		href: "/dashboard/placement",
-		icon: Award,
-		roles: ["ADMIN"],
-	},
-	{
-		label: "Settings",
-		href: "/dashboard/settings",
-		icon: Settings,
+		label: "View Assessments",
+		href: "/admin/assessments",
+		icon: Target,
 		roles: ["ADMIN"],
 	},
 
-	// STUDENT Navigation
+	// STUDENT Navigation (only existing pages)
 	{
 		label: "Dashboard",
 		href: "/student/dashboard",
@@ -125,21 +97,9 @@ const navigationItems: NavigationItem[] = [
 		roles: ["STUDENT"],
 	},
 	{
-		label: "Profile",
-		href: "/student/profile",
-		icon: User,
-		roles: ["STUDENT"],
-	},
-	{
-		label: "Courses",
-		href: "/student/courses",
-		icon: BookOpen,
-		roles: ["STUDENT"],
-	},
-	{
-		label: "Attendance",
-		href: "/student/attendance",
-		icon: Calendar,
+		label: "Assessments",
+		href: "/student/assessments",
+		icon: Target,
 		roles: ["STUDENT"],
 	},
 ];
@@ -275,7 +235,9 @@ export default function DashboardLayout({
 					<div className="flex items-center justify-between">
 						<div>
 							<h1 className="text-2xl font-bold text-gray-900">
-								Super Administrator Dashboard
+								{user.role === "SUPERADMIN" && "Super Administrator Dashboard"}
+								{user.role === "ADMIN" && "Administrator Dashboard"}
+								{user.role === "STUDENT" && "Student Dashboard"}
 							</h1>
 						</div>
 						<div className="flex items-center space-x-4">

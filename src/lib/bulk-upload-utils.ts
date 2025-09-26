@@ -64,19 +64,15 @@ export function generateSecurePassword(length: number = 12): string {
 /**
  * Sanitize string input
  */
-export function sanitizeString(input: string): string {
-	return input.trim().replace(/[<>]/g, "");
+export function sanitizeString(input?: string): string {
+	return (input || "").trim().replace(/[<>]/g, "");
 }
 
 /**
  * Validate course name
  */
 export function isValidCourse(course: string): boolean {
-	const supportedCourses = [
-		"MMS",
-		"MCA",
-		"PGDM",
-	];
+	const supportedCourses = ["MMS", "MCA", "PGDM"];
 	return supportedCourses.includes(course);
 }
 
@@ -90,11 +86,7 @@ export function isValidYearOfStudy(year: number): boolean {
 export const BULK_UPLOAD_CONSTANTS = {
 	MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
 	MAX_RECORDS: 1000,
-	SUPPORTED_COURSES: [
-		"MMS",
-		"MCA",
-		"PGDM",
-	],
+	SUPPORTED_COURSES: ["MMS", "MCA", "PGDM"],
 	REQUIRED_FIELDS: [
 		"student_id",
 		"roll_number",

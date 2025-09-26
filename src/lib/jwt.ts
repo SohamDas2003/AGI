@@ -38,9 +38,33 @@ export function verifyToken(token: string): JWTPayload | null {
 }
 
 export function getTokenFromRequest(request: Request): string | null {
+	// 1. Check standard Authorization header: "Bearer <token>"
 	const authHeader = request.headers.get("authorization");
 	if (authHeader && authHeader.startsWith("Bearer ")) {
 		return authHeader.substring(7);
 	}
+
+	// 2. Check Cookie header for common cookie names used across the app
+	const cookieHeader = request.headers.get("cookie");
+	if (cookieHeader) {
+		// Parse simple cookie string into a map. This is intentionally small and
+		// avoids external deps; it handles the typical "name=value; name2=value2" format.
+		const cookies = cookieHeader
+			.split(";")
+			.reduce<Record<string, string>>((acc, part) => {
+				const idx = part.indexOf("=");
+				if (idx > -1) {
+					const name = part.slice(0, idx).trim();
+					const val = part.slice(idx + 1).trim();
+					acc[name] = decodeURIComponent(val);
+				}
+				return acc;
+			}, {});
+
+		// Support both cookie names that have appeared in this project
+		return cookies["auth-token"] || cookies["token"] || null;
+	}
+
+	// Nothing found
 	return null;
 }

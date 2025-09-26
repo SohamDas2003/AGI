@@ -21,8 +21,31 @@ export interface Student {
 	batchName: string;
 	academicSession: string;
 	class: string;
+	course: "MCA" | "MMS" | "PGDM"; // Added course field for assessment targeting
 	studentStatus: "Active" | "Inactive";
 	email: string;
+
+	// Assessment-related fields
+	assessmentStatus?: {
+		assessmentId: ObjectId | string;
+		status:
+			| "eligible"
+			| "assigned"
+			| "started"
+			| "completed"
+			| "overdue"
+			| "excluded";
+		assignedAt?: Date;
+		lastAccessedAt?: Date;
+		attempts: number;
+		lastAttemptAt?: Date;
+		autoAssigned: boolean;
+	}[];
+
+	// Notifications
+	unreadNotifications?: number;
+	lastNotificationCheck?: Date;
+
 	createdAt?: Date;
 	updatedAt?: Date;
 }
@@ -35,6 +58,7 @@ export interface StudentBulkUpload extends Record<string, unknown> {
 	"Batch Name": string;
 	"Academic Session": string;
 	Class: string;
+	Course: "MCA" | "MMS" | "PGDM"; // Added course field
 	"Student Status": string;
 	Email: string;
 	Password: string;
