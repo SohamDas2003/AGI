@@ -74,7 +74,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	): Promise<User | null> => {
 		try {
 			console.log("🔐 Starting login process...");
-			
+
 			// If userType is not provided, try to determine it by attempting login with different roles
 			if (!userType) {
 				// Try SUPERADMIN first, then ADMIN, then STUDENT
@@ -96,7 +96,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 					});
 
 					const data = await response.json();
-					console.log(`🔐 Login response for ${role}:`, { success: data.success, hasUser: !!data.user });
+					console.log(`🔐 Login response for ${role}:`, {
+						success: data.success,
+						hasUser: !!data.user,
+					});
 
 					if (data.success && data.user) {
 						setUser(data.user);
@@ -119,7 +122,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				});
 
 				const data = await response.json();
-				console.log(`🔐 Login response:`, { success: data.success, hasUser: !!data.user });
+				console.log(`🔐 Login response:`, {
+					success: data.success,
+					hasUser: !!data.user,
+				});
 
 				if (data.success && data.user) {
 					setUser(data.user);

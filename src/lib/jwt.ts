@@ -5,8 +5,13 @@ const JWT_SECRET =
 const JWT_EXPIRE = process.env.JWT_EXPIRE || "7d";
 
 // Warn about fallback secret in production
-if (process.env.NODE_ENV === "production" && JWT_SECRET === "fallback-secret-key-change-in-production") {
-	console.warn("⚠️ WARNING: Using fallback JWT secret in production! Set JWT_SECRET environment variable.");
+if (
+	process.env.NODE_ENV === "production" &&
+	JWT_SECRET === "fallback-secret-key-change-in-production"
+) {
+	console.warn(
+		"⚠️ WARNING: Using fallback JWT secret in production! Set JWT_SECRET environment variable."
+	);
 }
 
 // jsonwebtoken expects a Secret type for the secret parameter; cast once here

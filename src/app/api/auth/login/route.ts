@@ -92,10 +92,12 @@ export async function POST(request: NextRequest) {
 		const nextResponse = NextResponse.json(response);
 
 		// Determine if we're in a secure context (HTTPS or localhost)
-		const isLocalhost = request.headers.get("host")?.includes("localhost") || 
-						   request.headers.get("host")?.includes("127.0.0.1");
-		const isSecure = request.headers.get("x-forwarded-proto") === "https" || 
-						process.env.NODE_ENV === "production";
+		const isLocalhost =
+			request.headers.get("host")?.includes("localhost") ||
+			request.headers.get("host")?.includes("127.0.0.1");
+		const isSecure =
+			request.headers.get("x-forwarded-proto") === "https" ||
+			process.env.NODE_ENV === "production";
 
 		// Log cookie settings for debugging
 		console.log("🍪 Cookie settings:", {
@@ -103,7 +105,7 @@ export async function POST(request: NextRequest) {
 			isSecure,
 			nodeEnv: process.env.NODE_ENV,
 			host: request.headers.get("host"),
-			forwardedProto: request.headers.get("x-forwarded-proto")
+			forwardedProto: request.headers.get("x-forwarded-proto"),
 		});
 
 		nextResponse.cookies.set("auth-token", token, {

@@ -31,8 +31,8 @@ export default function LoginPage() {
 
 			if (user) {
 				// Add a small delay to ensure cookie is set before redirect
-				await new Promise(resolve => setTimeout(resolve, 100));
-				
+				await new Promise((resolve) => setTimeout(resolve, 100));
+
 				// Redirect based on role
 				switch (user.role) {
 					case "SUPERADMIN":
