@@ -54,132 +54,27 @@ interface StudentFormData {
 	studentStatus: "Active" | "Inactive" | "Suspended";
 }
 
+// Static dropdown options as fallback
 const batchNames = dropdownData["Batch Name"];
 const academicSessions = dropdownData["Academic Session"];
 const classes = dropdownData["Class"];
 const sites = dropdownData["Site"];
 const studentStatuses = dropdownData["Student Status"];
 
-// Real student data from CSV
-const realStudents: Student[] = [
-	{
-		_id: "1",
-		studentName: "MAYUR KETAN MAKWANA",
-		registrationNo: "AIMSR/MCA/2024-26/62",
-		rollNo: "AIMSR/MCA/2024-26/062",
-		site: "AIMSR-Aditya Institute Of Management Studies & Research",
-		batchName: "MCA 2024-26",
-		academicSession: "SEMESTER III",
-		class: "Batch 2",
-		studentStatus: "Active",
-		isFirstLogin: false,
-		createdAt: new Date(),
-		updatedAt: new Date(),
-	},
-	{
-		_id: "2",
-		studentName: "PRADEEP RANJIT YADAV",
-		registrationNo: "AIMSR/MCA/2024-26/060",
-		rollNo: "AIMSR/MCA/2024-26/059",
-		site: "AIMSR-Aditya Institute Of Management Studies & Research",
-		batchName: "MCA 2024-26",
-		academicSession: "SEMESTER III",
-		class: "Batch 2",
-		studentStatus: "Active",
-		isFirstLogin: true,
-		createdAt: new Date(),
-		updatedAt: new Date(),
-	},
-	{
-		_id: "3",
-		studentName: "ADITI KHARE",
-		registrationNo: "AIMSR/MCA/2024-26/018",
-		rollNo: "AIMSR/MCA/2024-26/017",
-		site: "AIMSR-Aditya Institute Of Management Studies & Research",
-		batchName: "MCA 2024-26",
-		academicSession: "SEMESTER III",
-		class: "Batch 1",
-		studentStatus: "Active",
-		isFirstLogin: false,
-		createdAt: new Date(),
-		updatedAt: new Date(),
-	},
-	{
-		_id: "4",
-		studentName: "ARMAN SALIM SHAIKH",
-		registrationNo: "AIMSR/MCA/2024-26/044",
-		rollNo: "AIMSR/MCA/2024-26/043",
-		site: "AIMSR-Aditya Institute Of Management Studies & Research",
-		batchName: "MCA 2024-26",
-		academicSession: "SEMESTER III",
-		class: "Batch 2",
-		studentStatus: "Active",
-		isFirstLogin: false,
-		createdAt: new Date(),
-		updatedAt: new Date(),
-	},
-	{
-		_id: "5",
-		studentName: "RISHABH PREMRAJ TIWARI",
-		registrationNo: "AIMSR/MCA/2024-26/050",
-		rollNo: "AIMSR/MCA/2024-26/049",
-		site: "AIMSR-Aditya Institute Of Management Studies & Research",
-		batchName: "MCA 2024-26",
-		academicSession: "SEMESTER III",
-		class: "Batch 2",
-		studentStatus: "Active",
-		isFirstLogin: false,
-		createdAt: new Date(),
-		updatedAt: new Date(),
-	},
-	{
-		_id: "6",
-		studentName: "SOHAM DEBNATH DAS",
-		registrationNo: "AIMSR/MCA/2024-26/004",
-		rollNo: "AIMSR/MCA/2024-26/004",
-		site: "AIMSR-Aditya Institute Of Management Studies & Research",
-		batchName: "MCA 2024-26",
-		academicSession: "SEMESTER III",
-		class: "Batch 1",
-		studentStatus: "Active",
-		isFirstLogin: false,
-		createdAt: new Date(),
-		updatedAt: new Date(),
-	},
-	{
-		_id: "7",
-		studentName: "KUSH JITENDRA ASRANI",
-		registrationNo: "AIMSR/MCA/2024-26/001",
-		rollNo: "AIMSR/MCA/2024-26/001",
-		site: "AIMSR-Aditya Institute Of Management Studies & Research",
-		batchName: "MCA 2024-26",
-		academicSession: "SEMESTER III",
-		class: "Batch 1",
-		studentStatus: "Active",
-		isFirstLogin: false,
-		createdAt: new Date(),
-		updatedAt: new Date(),
-	},
-	{
-		_id: "8",
-		studentName: "VARUN MEHUL DAVE",
-		registrationNo: "AIMSR/MCA/2024-26/005",
-		rollNo: "AIMSR/MCA/2024-26/005",
-		site: "AIMSR-Aditya Institute Of Management Studies & Research",
-		batchName: "MCA 2024-26",
-		academicSession: "SEMESTER III",
-		class: "Batch 1",
-		studentStatus: "Active",
-		isFirstLogin: true,
-		createdAt: new Date(),
-		updatedAt: new Date(),
-	},
-];
-
 export default function StudentsPage() {
-	const [students, setStudents] = useState<Student[]>(realStudents);
-	const [filteredStudents, setFilteredStudents] =
-		useState<Student[]>(realStudents);
+	const [students, setStudents] = useState<Student[]>([]);
+	const [filteredStudents, setFilteredStudents] = useState<Student[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+
+	// Dynamic dropdown options from API
+	const [filterOptions, setFilterOptions] = useState({
+		sites: sites,
+		batchNames: batchNames,
+		academicSessions: academicSessions,
+		classes: classes,
+		studentStatuses: studentStatuses,
+	});
 	const [selectedBatch, setSelectedBatch] = useState<string>("all");
 	const [selectedClass, setSelectedClass] = useState<string>("all");
 	const [searchTerm, setSearchTerm] = useState("");
@@ -208,6 +103,49 @@ export default function StudentsPage() {
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+
+	// Fetch students data from API
+	const fetchStudents = async () => {
+		try {
+			setLoading(true);
+			setError(null);
+
+			const response = await fetch("/api/students/list?limit=1000");
+			if (!response.ok) {
+				throw new Error("Failed to fetch students");
+			}
+
+			const data = await response.json();
+			if (data.success) {
+				setStudents(data.students);
+				// Update filter options with data from API
+				if (data.filterOptions) {
+					setFilterOptions({
+						sites: data.filterOptions.sites || sites,
+						batchNames: data.filterOptions.batchNames || batchNames,
+						academicSessions:
+							data.filterOptions.academicSessions || academicSessions,
+						classes: data.filterOptions.classes || classes,
+						studentStatuses:
+							data.filterOptions.studentStatuses || studentStatuses,
+					});
+				}
+			} else {
+				throw new Error(data.message || "Failed to fetch students");
+			}
+		} catch (err) {
+			console.error("Error fetching students:", err);
+			setError(err instanceof Error ? err.message : "Failed to fetch students");
+			// Keep using static dropdown data as fallback
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	// Initial data fetch
+	useEffect(() => {
+		fetchStudents();
+	}, []);
 
 	// Filter and search logic
 	useEffect(() => {
@@ -250,7 +188,7 @@ export default function StudentsPage() {
 
 	// Batch statistics
 	const getBatchStats = () => {
-		const stats = batchNames
+		const stats = filterOptions.batchNames
 			.map((batch) => {
 				const batchStudents = students.filter((s) => s.batchName === batch);
 				const classes = [...new Set(batchStudents.map((s) => s.class))];
@@ -404,9 +342,9 @@ export default function StudentsPage() {
 	};
 
 	const downloadTemplate = () => {
-		// Create CSV content with new structure
-		const csvContent = `Student Name,Registration No,Roll No,Site,Batch Name,Academic Session,Class,Student Status
-SAMPLE STUDENT NAME,AIMSR/MCA/2024-26/XXX,AIMSR/MCA/2024-26/XXX,AIMSR-Aditya Institute Of Management Studies & Research,MCA 2024-26,SEMESTER III,Batch 1,Active`;
+		// Create CSV content with new structure including Email and Password
+		const csvContent = `Student Name,Registration No,Roll No,Site,Batch Name,Academic Session,Class,Student Status,Email,Password
+SAMPLE STUDENT NAME,AIMSR/MCA/2024-26/XXX,AIMSR/MCA/2024-26/XXX,AIMSR-Aditya Institute Of Management Studies & Research,MCA 2024-26,SEMESTER III,Batch 1,Active,sample.student@aimsr.edu.in,Student@123`;
 
 		const blob = new Blob([csvContent], { type: "text/csv" });
 		const url = window.URL.createObjectURL(blob);
@@ -493,7 +431,7 @@ SAMPLE STUDENT NAME,AIMSR/MCA/2024-26/XXX,AIMSR/MCA/2024-26/XXX,AIMSR-Aditya Ins
 							value={selectedBatch}
 							onChange={(e) => setSelectedBatch(e.target.value)}>
 							<option value="all">All Batches</option>
-							{batchNames.map((batch) => (
+							{filterOptions.batchNames.map((batch) => (
 								<option
 									key={batch}
 									value={batch}>
@@ -742,7 +680,7 @@ SAMPLE STUDENT NAME,AIMSR/MCA/2024-26/XXX,AIMSR/MCA/2024-26/XXX,AIMSR-Aditya Ins
 								}
 								className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
 								<option value="">Select Batch</option>
-								{batchNames.map((batch) => (
+								{filterOptions.batchNames.map((batch) => (
 									<option
 										key={batch}
 										value={batch}>
@@ -764,7 +702,7 @@ SAMPLE STUDENT NAME,AIMSR/MCA/2024-26/XXX,AIMSR/MCA/2024-26/XXX,AIMSR-Aditya Ins
 								}
 								className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
 								<option value="">Select Session</option>
-								{academicSessions.map((session) => (
+								{filterOptions.academicSessions.map((session) => (
 									<option
 										key={session}
 										value={session}>
@@ -786,7 +724,7 @@ SAMPLE STUDENT NAME,AIMSR/MCA/2024-26/XXX,AIMSR/MCA/2024-26/XXX,AIMSR-Aditya Ins
 								}
 								className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
 								<option value="">Select Class</option>
-								{classes.map((cls) => (
+								{filterOptions.classes.map((cls) => (
 									<option
 										key={cls}
 										value={cls}>
@@ -808,7 +746,7 @@ SAMPLE STUDENT NAME,AIMSR/MCA/2024-26/XXX,AIMSR/MCA/2024-26/XXX,AIMSR-Aditya Ins
 								}
 								className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
 								<option value="">Select Site</option>
-								{sites.map((site) => (
+								{filterOptions.sites.map((site) => (
 									<option
 										key={site}
 										value={site}>
@@ -835,7 +773,7 @@ SAMPLE STUDENT NAME,AIMSR/MCA/2024-26/XXX,AIMSR/MCA/2024-26/XXX,AIMSR-Aditya Ins
 								}
 								className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
 								<option value="">Select Status</option>
-								{studentStatuses.map((status) => (
+								{filterOptions.studentStatuses.map((status) => (
 									<option
 										key={status}
 										value={status}>
@@ -1153,8 +1091,37 @@ SAMPLE STUDENT NAME,AIMSR/MCA/2024-26/XXX,AIMSR/MCA/2024-26/XXX,AIMSR-Aditya Ins
 				</div>
 			</div>
 
+			{/* Error Display */}
+			{error && (
+				<div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+					<div className="flex items-center gap-3">
+						<div className="text-red-600">⚠️</div>
+						<div>
+							<h4 className="font-medium text-red-900 mb-1">Error</h4>
+							<p className="text-red-800 text-sm">{error}</p>
+							<button
+								onClick={() => {
+									setError(null);
+									fetchStudents();
+								}}
+								className="text-red-600 hover:text-red-800 text-sm font-medium mt-2">
+								Try Again
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
+			{/* Loading State */}
+			{loading && currentView === "overview" && (
+				<div className="flex items-center justify-center py-12">
+					<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+					<span className="ml-3 text-gray-600">Loading students...</span>
+				</div>
+			)}
+
 			{/* Content */}
-			{currentView === "overview" && renderOverview()}
+			{!loading && currentView === "overview" && renderOverview()}
 			{currentView === "add" && renderAddForm()}
 			{currentView === "bulk" && renderBulkUpload()}
 		</div>

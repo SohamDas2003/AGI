@@ -82,7 +82,7 @@ function SuperAdminDashboard() {
 		activeAssessmentsChange: 15.7,
 		completedAssessments: Math.floor(stats.activeStudents * 0.6),
 		completedAssessmentsChange: 23.1,
-		averageOverallScore: 78.4,
+		averageOverallScore: 0,
 		averageOverallScoreChange: 4.2,
 		placementRecommendationRate: 72.8,
 		placementRecommendationRateChange: 6.9,
