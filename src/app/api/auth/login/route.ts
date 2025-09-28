@@ -6,6 +6,15 @@ import { User, LoginRequest, LoginResponse } from "@/models/User";
 
 export async function POST(request: NextRequest) {
 	try {
+		// Log environment info for debugging
+		console.log("🔐 Login attempt:", {
+			host: request.headers.get("host"),
+			origin: request.headers.get("origin"),
+			userAgent: request.headers.get("user-agent"),
+			forwarded: request.headers.get("x-forwarded-proto"),
+			nodeEnv: process.env.NODE_ENV,
+		});
+
 		const body: LoginRequest = await request.json();
 		const { email, password, userType } = body;
 
@@ -81,11 +90,18 @@ export async function POST(request: NextRequest) {
 
 		// Set HTTP-only cookie for token
 		const nextResponse = NextResponse.json(response);
+
+		// Determine if we're in a secure context (HTTPS or localhost)
+		const isSecure =
+			request.headers.get("x-forwarded-proto") === "https" ||
+			request.headers.get("host")?.includes("localhost") === false;
+
 		nextResponse.cookies.set("auth-token", token, {
 			httpOnly: true,
-			secure: process.env.NODE_ENV === "production",
-			sameSite: "strict",
+			secure: isSecure,
+			sameSite: isSecure ? "lax" : "strict", // More flexible for HTTPS
 			maxAge: 7 * 24 * 60 * 60, // 7 days
+			path: "/", // Explicitly set path
 		});
 
 		return nextResponse;
