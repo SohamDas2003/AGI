@@ -7,14 +7,11 @@ import {
 	Users,
 	GraduationCap,
 	FileText,
-	BarChart3,
 	Settings,
 	Search,
 	Target,
-	Upload,
 	Award,
 	TrendingUp,
-	ClipboardList,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -35,27 +32,9 @@ const navigation = [
 		current: false,
 	},
 	{
-		name: "Bulk Upload",
-		icon: Upload,
-		href: "/dashboard/bulk-upload",
-		current: false,
-	},
-	{
 		name: "Assessments",
 		icon: Target,
 		href: "/dashboard/assessments",
-		current: false,
-	},
-	{
-		name: "Results",
-		icon: ClipboardList,
-		href: "/dashboard/results",
-		current: false,
-	},
-	{
-		name: "Analytics",
-		icon: BarChart3,
-		href: "/dashboard/analytics",
 		current: false,
 	},
 	{
