@@ -6,6 +6,13 @@ import { ObjectId } from "mongodb";
 
 export async function GET(request: NextRequest) {
 	try {
+		// Log for debugging
+		console.log("🔍 Auth check:", {
+			host: request.headers.get("host"),
+			cookies: request.headers.get("cookie"),
+			hasAuthToken: !!request.cookies.get("auth-token")?.value,
+		});
+
 		// Get token from cookie
 		const token = request.cookies.get("auth-token")?.value;
 
