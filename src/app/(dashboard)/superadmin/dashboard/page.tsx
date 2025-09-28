@@ -84,7 +84,7 @@ function SuperAdminDashboard() {
 		completedAssessmentsChange: 23.1,
 		averageOverallScore: 0,
 		averageOverallScoreChange: 4.2,
-		placementRecommendationRate: 72.8,
+		placementRecommendationRate: 0,
 		placementRecommendationRateChange: 6.9,
 	};
 

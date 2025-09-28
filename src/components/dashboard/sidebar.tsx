@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import {
 	LayoutDashboard,
@@ -10,54 +12,111 @@ import {
 	Settings,
 	Search,
 	Target,
-	Award,
 	TrendingUp,
 } from "lucide-react";
 
 interface SidebarProps {
 	className?: string;
+	userRole?: "SUPERADMIN" | "ADMIN" | "STUDENT";
 }
 
-const navigation = [
-	{
-		name: "Dashboard",
-		icon: LayoutDashboard,
-		href: "/dashboard",
-		current: true,
-	},
-	{
-		name: "Students",
-		icon: Users,
-		href: "/dashboard/students",
-		current: false,
-	},
-	{
-		name: "Assessments",
-		icon: Target,
-		href: "/dashboard/assessments",
-		current: false,
-	},
-	{
-		name: "Reports",
-		icon: FileText,
-		href: "/dashboard/reports",
-		current: false,
-	},
-	{
-		name: "Placement",
-		icon: Award,
-		href: "/dashboard/placement",
-		current: false,
-	},
-	{
-		name: "Settings",
-		icon: Settings,
-		href: "/dashboard/settings",
-		current: false,
-	},
-];
+// Navigation items for different roles
+const getNavigationForRole = (
+	role: "SUPERADMIN" | "ADMIN" | "STUDENT" = "ADMIN"
+) => {
+	switch (role) {
+		case "SUPERADMIN":
+			return [
+				{
+					name: "Dashboard",
+					icon: LayoutDashboard,
+					href: "/superadmin/dashboard",
+				},
+				{
+					name: "Create Admin",
+					icon: Settings,
+					href: "/superadmin/create-admin",
+				},
+				{
+					name: "Create Student",
+					icon: Users,
+					href: "/superadmin/create-student",
+				},
+				{
+					name: "View Students",
+					icon: Users,
+					href: "/superadmin/students",
+				},
+			];
+		case "ADMIN":
+			return [
+				{
+					name: "Dashboard",
+					icon: LayoutDashboard,
+					href: "/admin/dashboard",
+				},
+				{
+					name: "Students",
+					icon: Users,
+					href: "/admin/students",
+				},
+				{
+					name: "Create Student",
+					icon: Users,
+					href: "/admin/create-student",
+				},
+				{
+					name: "Assessments",
+					icon: Target,
+					href: "/admin/assessments",
+				},
+				{
+					name: "Create Assessment",
+					icon: FileText,
+					href: "/admin/create-assessment",
+				},
+			];
+		case "STUDENT":
+			return [
+				{
+					name: "Dashboard",
+					icon: LayoutDashboard,
+					href: "/student/dashboard",
+				},
+				{
+					name: "Assessments",
+					icon: Target,
+					href: "/student/assessments",
+				},
+			];
+		default:
+			return [
+				{
+					name: "Dashboard",
+					icon: LayoutDashboard,
+					href: "/dashboard",
+				},
+			];
+	}
+};
 
-export default function Sidebar({ className }: SidebarProps) {
+export default function Sidebar({
+	className,
+	userRole = "ADMIN",
+}: SidebarProps) {
+	const pathname = usePathname();
+	const navigation = getNavigationForRole(userRole);
+
+	// Function to check if the current path matches the navigation item
+	const isCurrentPath = (href: string) => {
+		// For exact dashboard paths, match exactly
+		if (href.endsWith("/dashboard")) {
+			return pathname === href;
+		}
+		// For other paths, check if current path starts with the href
+		return pathname.startsWith(href);
+	};
+
 	return (
 		<div
 			className={cn(
@@ -94,28 +153,31 @@ export default function Sidebar({ className }: SidebarProps) {
 			{/* Navigation */}
 			<nav className="flex-1 px-4 pb-4">
 				<ul className="space-y-1">
-					{navigation.map((item) => (
-						<li key={item.name}>
-							<a
-								href={item.href}
-								className={cn(
-									"group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:scale-[1.02]",
-									item.current
-										? "bg-blue-50 text-blue-700 border border-blue-200"
-										: "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-								)}>
-								<item.icon
+					{navigation.map((item) => {
+						const isCurrent = isCurrentPath(item.href);
+						return (
+							<li key={item.name}>
+								<Link
+									href={item.href}
 									className={cn(
-										"mr-3 h-5 w-5 transition-colors duration-200",
-										item.current
-											? "text-blue-500"
-											: "text-gray-400 group-hover:text-gray-500"
-									)}
-								/>
-								{item.name}
-							</a>
-						</li>
-					))}
+										"group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:scale-[1.02]",
+										isCurrent
+											? "bg-blue-50 text-blue-700 border border-blue-200"
+											: "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+									)}>
+									<item.icon
+										className={cn(
+											"mr-3 h-5 w-5 transition-colors duration-200",
+											isCurrent
+												? "text-blue-500"
+												: "text-gray-400 group-hover:text-gray-500"
+										)}
+									/>
+									{item.name}
+								</Link>
+							</li>
+						);
+					})}
 				</ul>
 			</nav>
 
@@ -139,7 +201,7 @@ export default function Sidebar({ className }: SidebarProps) {
 						</div>
 						<div className="flex justify-between">
 							<span>Placement Rate:</span>
-							<span className="font-medium">72.8%</span>
+							<span className="font-medium">0%</span>
 						</div>
 					</div>
 				</div>
