@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
 	LayoutDashboard,
@@ -112,6 +112,7 @@ export default function DashboardLayout({
 	const [user, setUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState(true);
 	const router = useRouter();
+	const pathname = usePathname();
 
 	useEffect(() => {
 		// Check authentication
@@ -183,16 +184,29 @@ export default function DashboardLayout({
 				{/* Navigation */}
 				<nav className="flex-1 px-4 pb-4">
 					<ul className="space-y-1 mt-4">
-						{userNavigationItems.map((item, index) => (
-							<li key={index}>
-								<Link
-									href={item.href}
-									className="group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:scale-[1.02] text-gray-700 hover:bg-gray-50 hover:text-gray-900">
-									<item.icon className="mr-3 h-5 w-5 transition-colors duration-200 text-gray-400 group-hover:text-gray-500" />
-									{item.label}
-								</Link>
-							</li>
-						))}
+						{userNavigationItems.map((item, index) => {
+							const isActive = pathname === item.href;
+							return (
+								<li key={index}>
+									<Link
+										href={item.href}
+										className={`group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:scale-[1.02] ${
+											isActive
+												? "bg-blue-50 text-blue-700 border border-blue-200"
+												: "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+										}`}>
+										<item.icon
+											className={`mr-3 h-5 w-5 transition-colors duration-200 ${
+												isActive
+													? "text-blue-500"
+													: "text-gray-400 group-hover:text-gray-500"
+											}`}
+										/>
+										{item.label}
+									</Link>
+								</li>
+							);
+						})}
 					</ul>
 				</nav>
 
