@@ -4,9 +4,13 @@ import { verifyToken } from "@/lib/jwt";
 export async function middleware(request: NextRequest) {
 	console.log("🚨🚨 MIDDLEWARE IS DEFINITELY RUNNING 🚨🚨");
 	console.log("Path:", request.nextUrl.pathname);
+	console.log("Environment:", process.env.NODE_ENV);
+	console.log("Host:", request.headers.get("host"));
+	console.log("Origin:", request.headers.get("origin"));
 
 	// Get the token from cookies
 	const token = request.cookies.get("auth-token")?.value;
+	console.log("🍪 Auth token present:", !!token);
 
 	// Check if accessing protected routes
 	if (
@@ -25,7 +29,10 @@ export async function middleware(request: NextRequest) {
 			const payload = verifyToken(token);
 			if (!payload) {
 				console.log("🛑 INVALID TOKEN - REDIRECTING TO LOGIN");
-				return NextResponse.redirect(new URL("/login", request.url));
+				const response = NextResponse.redirect(new URL("/login", request.url));
+				// Clear invalid token
+				response.cookies.delete("auth-token");
+				return response;
 			}
 
 			// Check role-based access
@@ -57,7 +64,10 @@ export async function middleware(request: NextRequest) {
 				"🛑 TOKEN VERIFICATION ERROR - REDIRECTING TO LOGIN",
 				error
 			);
-			return NextResponse.redirect(new URL("/login", request.url));
+			const response = NextResponse.redirect(new URL("/login", request.url));
+			// Clear invalid token
+			response.cookies.delete("auth-token");
+			return response;
 		}
 	}
 

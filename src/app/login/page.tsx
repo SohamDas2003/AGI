@@ -30,19 +30,22 @@ export default function LoginPage() {
 			const user = await login(email, password);
 
 			if (user) {
+				// Add a small delay to ensure cookie is set before redirect
+				await new Promise(resolve => setTimeout(resolve, 100));
+				
 				// Redirect based on role
 				switch (user.role) {
 					case "SUPERADMIN":
-						window.location.href = "/superadmin/dashboard";
+						router.push("/superadmin/dashboard");
 						break;
 					case "ADMIN":
-						window.location.href = "/admin/dashboard";
+						router.push("/admin/dashboard");
 						break;
 					case "STUDENT":
-						window.location.href = "/student/dashboard";
+						router.push("/student/dashboard");
 						break;
 					default:
-						window.location.href = "/";
+						router.push("/");
 						break;
 				}
 			} else {

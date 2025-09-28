@@ -73,6 +73,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		userType?: "SUPERADMIN" | "ADMIN" | "STUDENT"
 	): Promise<User | null> => {
 		try {
+			console.log("🔐 Starting login process...");
+			
 			// If userType is not provided, try to determine it by attempting login with different roles
 			if (!userType) {
 				// Try SUPERADMIN first, then ADMIN, then STUDENT
@@ -83,6 +85,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				];
 
 				for (const role of rolesToTry) {
+					console.log(`🔐 Trying login as ${role}...`);
 					const response = await fetch("/api/auth/login", {
 						method: "POST",
 						headers: {
@@ -93,15 +96,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 					});
 
 					const data = await response.json();
+					console.log(`🔐 Login response for ${role}:`, { success: data.success, hasUser: !!data.user });
 
 					if (data.success && data.user) {
 						setUser(data.user);
+						console.log("✅ Login successful:", data.user);
 						return data.user;
 					}
 				}
+				console.log("❌ Login failed for all roles");
 				return null;
 			} else {
 				// Use provided userType
+				console.log(`🔐 Logging in as ${userType}...`);
 				const response = await fetch("/api/auth/login", {
 					method: "POST",
 					headers: {
@@ -112,16 +119,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				});
 
 				const data = await response.json();
+				console.log(`🔐 Login response:`, { success: data.success, hasUser: !!data.user });
 
 				if (data.success && data.user) {
 					setUser(data.user);
+					console.log("✅ Login successful:", data.user);
 					return data.user;
 				}
 
+				console.log("❌ Login failed");
 				return null;
 			}
 		} catch (error) {
-			console.error("Login failed:", error);
+			console.error("❌ Login error:", error);
 			return null;
 		}
 	};
