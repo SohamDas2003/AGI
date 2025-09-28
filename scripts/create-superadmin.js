@@ -126,8 +126,8 @@ async function createSuperAdmin() {
 		let email;
 		do {
 			email =
-				(await prompt("📧 Email (default: superadmin@aimsr.edu): ")) ||
-				"superadmin@aimsr.edu";
+				(await prompt("📧 Email (default: superadmin@aimsr.edu.in): ")) ||
+				"superadmin@aimsr.edu.in";
 
 			// Validate email format
 			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

@@ -10,7 +10,7 @@ interface Answer {
 
 export async function POST(
 	request: NextRequest,
-	{ params }: { params: { assessmentId: string } }
+	{ params }: { params: Promise<{ assessmentId: string }> }
 ) {
 	try {
 		// Verify authentication
@@ -30,7 +30,7 @@ export async function POST(
 			);
 		}
 
-		const { assessmentId } = params;
+		const { assessmentId } = await params;
 
 		if (!ObjectId.isValid(assessmentId)) {
 			return NextResponse.json(

@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 
 export async function GET(
 	request: NextRequest,
-	{ params }: { params: { assessmentId: string } }
+	{ params }: { params: Promise<{ assessmentId: string }> }
 ) {
 	try {
 		// Verify authentication
@@ -25,7 +25,7 @@ export async function GET(
 			);
 		}
 
-		const { assessmentId } = params;
+		const { assessmentId } = await params;
 		if (!ObjectId.isValid(assessmentId)) {
 			return NextResponse.json(
 				{ success: false, error: "Invalid assessment ID" },

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
 	Search,
 	Filter,
@@ -101,58 +101,63 @@ export default function StudentsViewPage() {
 	const [showFilters, setShowFilters] = useState(false);
 	const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
 
-	const fetchStudents = async (page: number = 1) => {
-		try {
-			setLoading(true);
-			setError(null);
+	const fetchStudents = useCallback(
+		async (page: number = 1) => {
+			try {
+				setLoading(true);
+				setError(null);
 
-			const params = new URLSearchParams({
-				page: page.toString(),
-				limit: "20",
-				sortBy,
-				sortOrder,
-			});
+				const params = new URLSearchParams({
+					page: page.toString(),
+					limit: "20",
+					sortBy,
+					sortOrder,
+				});
 
-			if (search) params.append("search", search);
-			if (selectedSite) params.append("site", selectedSite);
-			if (selectedBatchName) params.append("batchName", selectedBatchName);
-			if (selectedAcademicSession)
-				params.append("academicSession", selectedAcademicSession);
-			if (selectedClass) params.append("class", selectedClass);
-			if (selectedCourse) params.append("course", selectedCourse);
-			if (selectedStudentStatus)
-				params.append("studentStatus", selectedStudentStatus);
+				if (search) params.append("search", search);
+				if (selectedSite) params.append("site", selectedSite);
+				if (selectedBatchName) params.append("batchName", selectedBatchName);
+				if (selectedAcademicSession)
+					params.append("academicSession", selectedAcademicSession);
+				if (selectedClass) params.append("class", selectedClass);
+				if (selectedCourse) params.append("course", selectedCourse);
+				if (selectedStudentStatus)
+					params.append("studentStatus", selectedStudentStatus);
 
-			const response = await fetch(`/api/students/list?${params}`);
+				const response = await fetch(`/api/students/list?${params}`);
 
-			if (!response.ok) {
-				throw new Error("Failed to fetch students");
+				if (!response.ok) {
+					throw new Error("Failed to fetch students");
+				}
+
+				const data: StudentsResponse = await response.json();
+				setStudents(data.students);
+				setPagination(data.pagination);
+				setFilterOptions(data.filterOptions);
+			} catch (err) {
+				setError(
+					err instanceof Error ? err.message : "Failed to fetch students"
+				);
+			} finally {
+				setLoading(false);
 			}
-
-			const data: StudentsResponse = await response.json();
-			setStudents(data.students);
-			setPagination(data.pagination);
-			setFilterOptions(data.filterOptions);
-		} catch (err) {
-			setError(err instanceof Error ? err.message : "Failed to fetch students");
-		} finally {
-			setLoading(false);
-		}
-	};
+		},
+		[
+			search,
+			selectedSite,
+			selectedBatchName,
+			selectedAcademicSession,
+			selectedClass,
+			selectedCourse,
+			selectedStudentStatus,
+			sortBy,
+			sortOrder,
+		]
+	);
 
 	useEffect(() => {
 		fetchStudents(1);
-	}, [
-		search,
-		selectedSite,
-		selectedBatchName,
-		selectedAcademicSession,
-		selectedClass,
-		selectedCourse,
-		selectedStudentStatus,
-		sortBy,
-		sortOrder,
-	]); // eslint-disable-line react-hooks/exhaustive-deps
+	}, [fetchStudents]);
 
 	const handleSort = (field: SortField) => {
 		if (sortBy === field) {
