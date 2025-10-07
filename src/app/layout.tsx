@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "Aditya Group Of Institutions - Placement Assessment Platform",
+	title: "Aditya Group Of Institutions - Self Assessment Platform",
 	description:
 		"Comprehensive web-based platform for educational institutes to assess students across 5 key skill areas and provide detailed analytics for placement opportunities.",
 };

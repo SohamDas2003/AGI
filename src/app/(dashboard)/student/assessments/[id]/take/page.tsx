@@ -323,19 +323,24 @@ export default function TakeAssessmentPage() {
 						)}
 					</div>
 
-					{/* Instructions */}
-					{assessment.instructions && (
-						<div className="mb-8">
-							<h2 className="text-xl font-semibold text-gray-900 mb-4">
-								Instructions
-							</h2>
-							<div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-								<p className="text-blue-900 whitespace-pre-wrap">
-									{assessment.instructions}
-								</p>
-							</div>
+					{/* Sections Overview */}
+					<div className="mb-8">
+						<h2 className="text-xl font-semibold text-gray-900 mb-4">
+							Assessment Sections
+						</h2>
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+							{assessment.sections.map((section, index) => (
+								<div
+									key={section._id}
+									className="flex items-start space-x-3 bg-gray-50 p-3 rounded-lg">
+									<span className="font-semibold text-blue-600">
+										{index + 1}.
+									</span>
+									<p className="text-gray-700">{section.title}</p>
+								</div>
+							))}
 						</div>
-					)}
+					</div>
 
 					{/* Disclaimer */}
 					<div className="mb-8">
@@ -347,9 +352,9 @@ export default function TakeAssessmentPage() {
 								</h2>
 							</div>
 							<p className="text-yellow-900 font-medium">
-								The purpose of this test is to help students identify their
-								strengths and areas of improvement. Results are for guidance
-								only and do not guarantee placement outcomes.
+								This self-assessment test is designed only for practice and
+								self-improvement purposes. The purpose of this test is to help
+								students identify their strengths and areas of improvement.
 							</p>
 						</div>
 					</div>
@@ -469,6 +474,20 @@ export default function TakeAssessmentPage() {
 								}`}
 								title={`Section ${index + 1}: ${section.title}`}
 							/>
+						))}
+					</div>
+					{/* Section Names */}
+					<div className="flex space-x-1 mt-2">
+						{assessment.sections.map((section, index) => (
+							<div
+								key={section._id}
+								className={`flex-1 text-center text-xs ${
+									index === currentSectionIndex
+										? "text-blue-600 font-semibold"
+										: "text-gray-500"
+								}`}>
+								{index + 1}. {section.title}
+							</div>
 						))}
 					</div>
 				</div>

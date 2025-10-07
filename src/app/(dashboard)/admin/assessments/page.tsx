@@ -16,7 +16,6 @@ import {
 	Search,
 } from "lucide-react";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import AssessmentDetailModal from "@/components/assessment/AssessmentDetailModal";
 import Link from "next/link";
 
 interface Assessment {
@@ -49,10 +48,6 @@ function AssessmentsPage() {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [statusFilter, setStatusFilter] = useState("all");
 	const [error, setError] = useState<string | null>(null);
-	const [selectedAssessmentId, setSelectedAssessmentId] = useState<
-		string | null
-	>(null);
-	const [showDetailModal, setShowDetailModal] = useState(false);
 
 	useEffect(() => {
 		fetchAssessments();
@@ -390,45 +385,57 @@ function AssessmentsPage() {
 											</td>
 											<td className="px-6 py-4">
 												<div className="flex items-center gap-2">
-													<button
-														onClick={() => {
-															setSelectedAssessmentId(assessment._id);
-															setShowDetailModal(true);
-														}}
+													<Link
+														href={`/admin/assessments/${assessment._id}/details`}
 														className="p-1 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded"
 														title="View Details">
 														<Eye className="h-4 w-4" />
-													</button>
-													<button
-														onClick={() => {
-															// TODO: Implement edit functionality
-															console.log("Edit assessment:", assessment._id);
-														}}
+													</Link>
+													<Link
+														href={`/admin/assessments/${assessment._id}/edit`}
 														className="p-1 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded"
 														title="Edit Assessment">
 														<Edit className="h-4 w-4" />
-													</button>
-													<button
-														onClick={() => {
-															// TODO: Implement reports/analytics view
-															console.log("View analytics:", assessment._id);
-														}}
+													</Link>
+													<Link
+														href={`/admin/assessments/${assessment._id}/analytics`}
 														className="p-1 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded"
 														title="View Analytics">
 														<BarChart3 className="h-4 w-4" />
-													</button>
+													</Link>
 													<button
-														onClick={() => {
-															// TODO: Implement delete with confirmation
+														onClick={async () => {
 															if (
 																confirm(
-																	"Are you sure you want to delete this assessment?"
+																	`Are you sure you want to delete "${assessment.title}"? This action cannot be undone.`
 																)
 															) {
-																console.log(
-																	"Delete assessment:",
-																	assessment._id
-																);
+																try {
+																	const response = await fetch(
+																		`/api/assessments/${assessment._id}`,
+																		{
+																			method: "DELETE",
+																			credentials: "include",
+																		}
+																	);
+
+																	if (response.ok) {
+																		alert("Assessment deleted successfully");
+																		fetchAssessments();
+																	} else {
+																		const result = await response.json();
+																		alert(
+																			result.error ||
+																				"Failed to delete assessment"
+																		);
+																	}
+																} catch (error) {
+																	console.error(
+																		"Error deleting assessment:",
+																		error
+																	);
+																	alert("Failed to delete assessment");
+																}
 															}
 														}}
 														className="p-1 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded"
@@ -444,18 +451,6 @@ function AssessmentsPage() {
 						</div>
 					)}
 				</div>
-
-				{/* Assessment Detail Modal */}
-				{selectedAssessmentId && (
-					<AssessmentDetailModal
-						assessmentId={selectedAssessmentId}
-						isOpen={showDetailModal}
-						onClose={() => {
-							setShowDetailModal(false);
-							setSelectedAssessmentId(null);
-						}}
-					/>
-				)}
 			</div>
 		</ProtectedRoute>
 	);

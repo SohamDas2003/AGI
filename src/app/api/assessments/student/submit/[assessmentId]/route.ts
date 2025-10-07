@@ -115,43 +115,103 @@ export async function POST(
 			);
 		}
 
-		// Calculate score (simple percentage based on scale)
+		// Calculate score with section-wise breakdown
 		let totalScore = 0;
 		let maxPossibleScore = 0;
 		const answerMap = new Map<string, number>();
+		const sectionScores: Array<{
+			sectionId: string;
+			sectionTitle: string;
+			score: number;
+			maxPossibleScore: number;
+			percentage: number;
+			averageRating: number;
+			questionsAnswered: number;
+			totalQuestions: number;
+		}> = [];
 
-		// Create answer map for easy lookup
+		// Create answer map for easy lookup - normalize all IDs to strings
 		answers.forEach((answer) => {
-			answerMap.set(answer.questionId, answer.value);
+			answerMap.set(answer.questionId.toString(), answer.value);
 		});
 
-		// Calculate score based on assessment structure
+		// Calculate score based on assessment structure with section breakdown
 		assessment.sections.forEach(
 			(section: {
+				_id?: ObjectId;
+				id?: string;
+				title?: string;
 				questions: Array<{
 					_id?: ObjectId;
-					scale?: { min?: number; max?: number };
+					id?: string;
+					scaleOptions?: { min?: number; max?: number };
 				}>;
 			}) => {
+				let sectionScore = 0;
+				let sectionMaxScore = 0;
+				let sectionRatingSum = 0;
+				let questionsAnswered = 0;
+
 				section.questions.forEach((question) => {
-					const questionId = question._id?.toString();
+					// Normalize question ID to string for lookup
+					const questionId = question._id
+						? question._id.toString()
+						: question.id?.toString();
+					const min = question.scaleOptions?.min || 1;
+					const max = question.scaleOptions?.max || 5;
+
 					if (questionId && answerMap.has(questionId)) {
 						const answer = answerMap.get(questionId) || 0;
-						const min = question.scale?.min || 1;
-						const max = question.scale?.max || 5;
 
 						// Normalize score to 0-100 scale
 						const normalizedScore = ((answer - min) / (max - min)) * 100;
-						totalScore += normalizedScore;
-						maxPossibleScore += 100;
+						sectionScore += normalizedScore;
+						sectionMaxScore += 100;
+						sectionRatingSum += answer;
+						questionsAnswered++;
 					}
 				});
+
+				const sectionPercentage =
+					sectionMaxScore > 0
+						? Math.round((sectionScore / sectionMaxScore) * 100 * 10) / 10
+						: 0;
+
+				const averageRating =
+					questionsAnswered > 0
+						? Math.round((sectionRatingSum / questionsAnswered) * 10) / 10
+						: 0;
+
+				sectionScores.push({
+					sectionId: section._id
+						? section._id.toString()
+						: section.id?.toString() || "",
+					sectionTitle: section.title || "Untitled Section",
+					score: Math.round(sectionScore * 10) / 10,
+					maxPossibleScore: sectionMaxScore,
+					percentage: sectionPercentage,
+					averageRating: averageRating,
+					questionsAnswered: questionsAnswered,
+					totalQuestions: section.questions.length,
+				});
+
+				totalScore += sectionScore;
+				maxPossibleScore += sectionMaxScore;
 			}
 		);
 
 		const overallPercentage =
 			maxPossibleScore > 0
-				? Math.round((totalScore / maxPossibleScore) * 100)
+				? Math.round((totalScore / maxPossibleScore) * 100 * 10) / 10
+				: 0;
+
+		const overallAverageRating =
+			answers.length > 0
+				? Math.round(
+						(answers.reduce((sum, ans) => sum + ans.value, 0) /
+							answers.length) *
+							10
+				  ) / 10
 				: 0;
 
 		// Update the response record
@@ -164,6 +224,8 @@ export async function POST(
 			score: totalScore,
 			maxScore: maxPossibleScore,
 			overallPercentage,
+			overallAverageRating,
+			sectionScores: sectionScores,
 			isAutoSubmit: isAutoSubmit || false,
 		};
 

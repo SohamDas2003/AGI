@@ -53,6 +53,18 @@ interface AssessmentResponse {
 	timeSpent: number;
 	submittedAt: Date;
 	isCompleted: boolean;
+	overallPercentage?: number;
+	overallAverageRating?: number;
+	sectionScores?: Array<{
+		sectionId: string;
+		sectionTitle: string;
+		score: number;
+		maxPossibleScore: number;
+		percentage: number;
+		averageRating: number;
+		questionsAnswered: number;
+		totalQuestions: number;
+	}>;
 	assessment: Assessment;
 }
 
@@ -276,19 +288,24 @@ export default function AssessmentResultsPage() {
 						<div className="text-center">
 							<div
 								className={`text-3xl font-bold mb-1 ${getScoreColor(
-									overallStats.overallAverage
+									response.overallAverageRating || overallStats.overallAverage
 								)}`}>
-								{overallStats.overallAverage.toFixed(1)}
+								{(
+									response.overallAverageRating || overallStats.overallAverage
+								).toFixed(1)}
 							</div>
-							<div className="text-sm text-gray-600">Average Score</div>
+							<div className="text-sm text-gray-600">Average Rating</div>
 							<div className="text-xs text-gray-500">out of 5.0</div>
 						</div>
 
 						<div className="text-center">
-							<div className="text-3xl font-bold text-blue-600 mb-1">
-								{overallStats.completionRate.toFixed(0)}%
+							<div
+								className={`text-3xl font-bold mb-1 ${getScoreColor(
+									(response.overallPercentage || 0) / 20
+								)}`}>
+								{(response.overallPercentage || 0).toFixed(1)}%
 							</div>
-							<div className="text-sm text-gray-600">Completion Rate</div>
+							<div className="text-sm text-gray-600">Overall Score</div>
 						</div>
 
 						<div className="text-center">
@@ -313,6 +330,51 @@ export default function AssessmentResultsPage() {
 				<h2 className="text-xl font-semibold text-gray-900 mb-6">
 					Section-wise Results
 				</h2>
+
+				{/* Section Performance Summary */}
+				{response.sectionScores && response.sectionScores.length > 0 && (
+					<div className="mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+						{response.sectionScores.map((sectionScore) => (
+							<div
+								key={sectionScore.sectionId}
+								className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+								<h4 className="font-medium text-gray-900 mb-2">
+									{sectionScore.sectionTitle}
+								</h4>
+								<div className="flex items-center justify-between mb-2">
+									<span className="text-sm text-gray-600">Score:</span>
+									<span
+										className={`text-xl font-bold ${getScoreColor(
+											sectionScore.percentage / 20
+										)}`}>
+										{sectionScore.percentage.toFixed(1)}%
+									</span>
+								</div>
+								<div className="flex items-center justify-between mb-2">
+									<span className="text-sm text-gray-600">Avg Rating:</span>
+									<span
+										className={`font-semibold ${getScoreColor(
+											sectionScore.averageRating
+										)}`}>
+										{sectionScore.averageRating.toFixed(1)} / 5
+									</span>
+								</div>
+								<div className="flex items-center justify-between">
+									<span className="text-sm text-gray-600">Completed:</span>
+									<span className="font-medium text-gray-900">
+										{sectionScore.questionsAnswered} /{" "}
+										{sectionScore.totalQuestions}
+									</span>
+								</div>
+								{sectionScore.percentage < 60 && (
+									<div className="mt-2 px-2 py-1 bg-red-100 text-red-700 text-xs rounded text-center">
+										Needs Improvement
+									</div>
+								)}
+							</div>
+						))}
+					</div>
+				)}
 
 				<div className="space-y-6">
 					{response.assessment.sections.map((section, index) => {

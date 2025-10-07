@@ -245,7 +245,7 @@ export default function DashboardLayout({
 			{/* Main Content */}
 			<div className="flex-1 flex flex-col">
 				{/* Top Header */}
-				<header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+				{/* <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
 					<div className="flex items-center justify-between">
 						<div>
 							<h1 className="text-2xl font-bold text-gray-900">
@@ -263,7 +263,7 @@ export default function DashboardLayout({
 							</span>
 						</div>
 					</div>
-				</header>
+				</header> */}
 
 				{/* Page Content */}
 				<main className="flex-1 p-6">{children}</main>

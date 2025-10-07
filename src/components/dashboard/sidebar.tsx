@@ -133,7 +133,7 @@ export default function Sidebar({
 						<span className="text-lg font-semibold text-gray-900">
 							AGI Portal
 						</span>
-						<p className="text-xs text-gray-500">Placement Assessment</p>
+						<p className="text-xs text-gray-500">Self Assessment</p>
 					</div>
 				</div>
 			</div>

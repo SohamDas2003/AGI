@@ -231,10 +231,12 @@ export async function POST(
 			sections: assessment.sections.map(
 				(section: {
 					_id?: ObjectId;
+					id?: string;
 					title: string;
 					description?: string;
 					questions: Array<{
 						_id?: ObjectId;
+						id?: string;
 						prompt?: string;
 						text?: string;
 						required?: boolean;
@@ -247,12 +249,13 @@ export async function POST(
 						};
 					}>;
 				}) => ({
-					_id: section._id || new ObjectId(),
+					_id: section._id ? section._id.toString() : section.id,
 					title: section.title,
 					description: section.description || "",
 					questions: section.questions.map(
 						(question: {
 							_id?: ObjectId;
+							id?: string;
 							prompt?: string;
 							text?: string;
 							required?: boolean;
@@ -269,29 +272,20 @@ export async function POST(
 							const minLabel = question.scale?.minLabel || "Poor";
 							const maxLabel = question.scale?.maxLabel || "Excellent";
 
-							// Generate labels array if not provided
-							let labels = question.scale?.labels || [];
-							if (labels.length === 0) {
-								// Create labels based on scale range
-								const range = max - min + 1;
-								if (range === 5) {
-									labels = ["Very Poor", "Poor", "Fair", "Good", "Excellent"];
-								} else if (range === 4) {
-									labels = ["Poor", "Fair", "Good", "Excellent"];
-								} else if (range === 3) {
-									labels = ["Low", "Medium", "High"];
-								} else {
-									// Generate generic labels for other ranges
-									labels = Array.from({ length: range }, (_, i) => {
-										if (i === 0) return minLabel;
-										if (i === range - 1) return maxLabel;
-										return `Level ${i + 1}`;
-									});
-								}
-							}
+							// Use provided labels if present; otherwise always default to 5 fixed learner-level labels
+							const labels =
+								question.scale?.labels && question.scale.labels.length
+									? question.scale.labels
+									: [
+											"Beginner",
+											"Elementary",
+											"Intermediate",
+											"Advanced",
+											"Expert",
+									  ];
 
 							return {
-								_id: question._id || new ObjectId(),
+								_id: question._id ? question._id.toString() : question.id,
 								text: question.prompt || question.text || "",
 								isRequired: question.required !== false,
 								scaleOptions: {

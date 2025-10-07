@@ -442,6 +442,20 @@ export default function AssessmentDetailsPage() {
 				</div>
 			</div>
 
+			{/* Sections Quick Names */}
+			<div className="bg-white rounded-lg border border-gray-200 p-4">
+				<div className="text-sm text-gray-600 mb-2">Sections</div>
+				<div className="flex space-x-2 overflow-x-auto">
+					{assessment.sections.map((section, idx) => (
+						<div
+							key={section._id}
+							className="flex-none px-3 py-2 bg-gray-50 rounded-md text-xs text-gray-700">
+							{idx + 1}. {section.title}
+						</div>
+					))}
+				</div>
+			</div>
+
 			{/* Actions */}
 			<div className="flex items-center justify-between bg-white rounded-lg border border-gray-200 p-4">
 				<Link
