@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@/lib/jwt";
+import { verifyToken } from "@/lib/jwt-edge";
 import { connectToDatabase } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 			);
 		}
 
-		const decoded = verifyToken(token);
+		const decoded = await verifyToken(token);
 		if (!decoded || decoded.role !== "STUDENT") {
 			return NextResponse.json(
 				{ success: false, error: "Not authorized" },

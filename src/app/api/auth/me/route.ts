@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
-import { verifyToken } from "@/lib/jwt";
+import { verifyToken } from "@/lib/jwt-edge";
 import { User } from "@/models/User";
 import { ObjectId } from "mongodb";
 
@@ -26,8 +26,8 @@ export async function GET(request: NextRequest) {
 			);
 		}
 
-		// Verify token
-		const payload = verifyToken(token);
+		// Verify token (now async)
+		const payload = await verifyToken(token);
 		if (!payload) {
 			return NextResponse.json(
 				{

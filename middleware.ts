@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@/lib/jwt";
+import { verifyToken } from "@/lib/jwt-edge";
 
 export async function middleware(request: NextRequest) {
 	console.log("🚨🚨 MIDDLEWARE IS DEFINITELY RUNNING 🚨🚨");
@@ -24,9 +24,9 @@ export async function middleware(request: NextRequest) {
 			return NextResponse.redirect(new URL("/login", request.url));
 		}
 
-		// Verify token
+		// Verify token (now async with jose)
 		try {
-			const payload = verifyToken(token);
+			const payload = await verifyToken(token);
 			if (!payload) {
 				console.log("🛑 INVALID TOKEN - REDIRECTING TO LOGIN");
 				const response = NextResponse.redirect(new URL("/login", request.url));

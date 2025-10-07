@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
-import { getTokenFromRequest, verifyToken } from "@/lib/jwt";
+import { getTokenFromRequest, verifyToken } from "@/lib/jwt-edge";
 
 export async function GET(request: NextRequest) {
 	try {
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 			);
 		}
 
-		const decoded = verifyToken(token);
+		const decoded = await verifyToken(token);
 		if (
 			!decoded ||
 			(decoded.role !== "ADMIN" && decoded.role !== "SUPERADMIN")

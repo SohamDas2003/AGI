@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getTokenFromRequest, verifyToken } from "@/lib/jwt";
+import { getTokenFromRequest, verifyToken } from "@/lib/jwt-edge";
 import { connectToDatabase } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		const decoded = verifyToken(token);
+		const decoded = await verifyToken(token);
 		if (
 			!decoded ||
 			(decoded.role !== "ADMIN" && decoded.role !== "SUPERADMIN")
@@ -170,7 +170,7 @@ export async function GET(request: NextRequest) {
 			);
 		}
 
-		const decoded = verifyToken(token);
+		const decoded = await verifyToken(token);
 		if (
 			!decoded ||
 			(decoded.role !== "ADMIN" && decoded.role !== "SUPERADMIN")

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { comparePassword } from "@/lib/auth";
-import { generateToken } from "@/lib/jwt";
+import { generateToken } from "@/lib/jwt-edge";
 import { User, LoginRequest, LoginResponse } from "@/models/User";
 
 export async function POST(request: NextRequest) {
@@ -66,8 +66,8 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Generate JWT token
-		const token = generateToken({
+		// Generate JWT token (now async with jose)
+		const token = await generateToken({
 			userId: user._id!.toString(),
 			email: user.email,
 			role: user.role,
