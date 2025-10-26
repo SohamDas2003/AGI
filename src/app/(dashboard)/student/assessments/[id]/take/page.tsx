@@ -108,11 +108,6 @@ export default function TakeAssessmentPage() {
 				const result = await response.json();
 
 				if (result.success) {
-					alert(
-						isAutoSubmit
-							? "Assessment auto-submitted due to time limit!"
-							: "Assessment submitted successfully!"
-					);
 					router.push(`/student/assessments/${assessmentId}/results`);
 				} else {
 					alert("Error submitting assessment: " + result.error);

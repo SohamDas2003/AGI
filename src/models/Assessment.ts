@@ -8,9 +8,9 @@ export interface AssessmentQuestion {
 	scaleOptions: {
 		min: number; // 1
 		max: number; // 5
-		minLabel: string; // "Strongly Disagree"
-		maxLabel: string; // "Strongly Agree"
-		labels: string[]; // ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"]
+		minLabel: string; // "Beginner"
+		maxLabel: string; // "Expert"
+		labels: string[]; // ["Beginner", "Elementary", "Intermediate", "Advanced", "Expert"]
 	};
 	order: number; // For ordering questions within section
 	isRequired: boolean;

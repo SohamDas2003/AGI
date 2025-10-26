@@ -104,6 +104,22 @@ export interface DashboardMetrics {
 	placementRecommendationRateChange: number;
 }
 
+export interface AnalyticsMetrics {
+	totalAssessments: number;
+	totalEligibleStudents: number;
+	totalAssigned: number;
+	totalStarted: number;
+	totalCompleted: number;
+	overallAverageScore: number;
+	overallCompletionRate: number;
+	placementRecommendationRate: number;
+	totalStudentsChange: number;
+	activeAssessmentsChange: number;
+	completedAssessmentsChange: number;
+	averageOverallScoreChange: number;
+	placementRecommendationRateChange: number;
+}
+
 export interface SkillAnalytics {
 	skill: string;
 	averageScore: number;

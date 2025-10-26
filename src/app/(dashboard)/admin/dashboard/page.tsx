@@ -2,74 +2,62 @@
 
 import React, { useEffect, useState } from "react";
 import MetricsCards from "@/components/dashboard/metrics-cards";
-import PerformanceChart from "@/components/dashboard/performance-chart";
 import StudentTable from "@/components/dashboard/student-table";
-import ClassOverview from "@/components/dashboard/class-overview";
 import { GraduationCap, Users } from "lucide-react";
-import { DashboardMetrics } from "@/types";
+import { AnalyticsMetrics, DashboardMetrics } from "@/types";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { User } from "@/models/User";
-import { chartData, courseAnalytics, skillAnalytics } from "@/lib/mock-data";
-
-interface DashboardStats {
-	totalStudents: number;
-	activeStudents: number;
-}
 
 function AdminDashboard() {
-	const [stats, setStats] = useState<DashboardStats>({
-		totalStudents: 0,
-		activeStudents: 0,
-	});
+	const [metrics, setMetrics] = useState<AnalyticsMetrics | null>(null);
 	const [students, setStudents] = useState<User[]>([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		const fetchStats = async () => {
+		const fetchData = async () => {
 			try {
-				const response = await fetch("/api/students/list?limit=1000");
-				if (response.ok) {
-					const data = await response.json();
-					// Set the actual students data
-					setStudents(data.students || []);
+				// Fetch analytics data
+				const analyticsResponse = await fetch(
+					`/api/analytics?cacheBust=${new Date().getTime()}`
+				);
+				if (analyticsResponse.ok) {
+					const analyticsData = await analyticsResponse.json();
+					setMetrics(analyticsData.metrics);
+				} else {
+					console.error("Failed to fetch analytics data");
+				}
 
-					const activeStudents =
-						data.students?.filter(
-							(student: { role: string }) => student.role === "STUDENT"
-						) || [];
-
-					setStats({
-						totalStudents: data.students?.length || 0,
-						activeStudents: activeStudents.length,
-					});
+				// Fetch students data
+				const studentsResponse = await fetch("/api/students/list?limit=1000");
+				if (studentsResponse.ok) {
+					const studentsData = await studentsResponse.json();
+					setStudents(studentsData.students || []);
+				} else {
+					console.error("Failed to fetch students data");
 				}
 			} catch (error) {
-				console.error("Error fetching stats:", error);
-				// Set empty array on error
-				setStudents([]);
+				console.error("Error fetching data:", error);
 			} finally {
 				setLoading(false);
 			}
 		};
 
-		fetchStats();
+		fetchData();
 	}, []);
 
 	// Create admin-specific metrics based on fetched stats
 	const adminMetrics: DashboardMetrics = {
-		totalStudents: stats.totalStudents,
-		totalStudentsChange: 8.3,
-		activeAssessments: Math.floor(stats.activeStudents * 0.8),
-		activeAssessmentsChange: 15.7,
-		completedAssessments: Math.floor(stats.activeStudents * 0.6),
-		completedAssessmentsChange: 23.1,
-		averageOverallScore: 0,
-		averageOverallScoreChange: 4.2,
-		placementRecommendationRate:
-			stats.totalStudents > 0
-				? Math.round((stats.activeStudents / stats.totalStudents) * 100)
-				: 0,
-		placementRecommendationRateChange: 6.9,
+		totalStudents: students.length,
+		totalStudentsChange: metrics?.totalStudentsChange ?? 0,
+		activeAssessments: metrics?.totalAssigned ?? 0,
+		activeAssessmentsChange: metrics?.activeAssessmentsChange ?? 0,
+		completedAssessments: metrics?.totalCompleted ?? 0,
+		completedAssessmentsChange: metrics?.completedAssessmentsChange ?? 0,
+		averageOverallScore: metrics?.overallAverageScore ?? 0,
+		averageOverallScoreChange: metrics?.averageOverallScoreChange ?? 0,
+		placementRecommendationRate: metrics?.placementRecommendationRate ?? 0,
+		placementRecommendationRateChange:
+			metrics?.placementRecommendationRateChange ?? 0,
 	};
 
 	if (loading) {
@@ -81,13 +69,13 @@ function AdminDashboard() {
 	}
 
 	return (
-		<div className="max-w-7xl mx-auto space-y-6">
+		<div className="w-full space-y-4 sm:space-y-6">
 			{/* Page Header */}
-			<div className="mb-8">
-				<h1 className="text-3xl font-bold text-gray-900 mb-2">
+			<div className="mb-6 sm:mb-8">
+				<h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
 					Administrator Dashboard
 				</h1>
-				<p className="text-gray-600">
+				<p className="text-sm sm:text-base text-gray-600">
 					Manage students and monitor academic activities across the institution
 				</p>
 			</div>
@@ -96,7 +84,7 @@ function AdminDashboard() {
 			<MetricsCards metrics={adminMetrics} />
 
 			{/* Charts and Course Overview */}
-			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+			{/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 				<div className="lg:col-span-2">
 					<PerformanceChart data={chartData} />
 				</div>
@@ -106,7 +94,7 @@ function AdminDashboard() {
 						skills={skillAnalytics}
 					/>
 				</div>
-			</div>
+			</div> */}
 
 			{/* Student Table */}
 			<StudentTable students={students} />

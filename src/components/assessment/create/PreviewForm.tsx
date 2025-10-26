@@ -44,12 +44,14 @@ interface PreviewFormProps {
 	formData: AssessmentFormData;
 	onCreateAssessment: () => void;
 	isCreating: boolean;
+	isEditMode?: boolean;
 }
 
 function PreviewForm({
 	formData,
 	onCreateAssessment,
 	isCreating,
+	isEditMode = false,
 }: PreviewFormProps) {
 	const totalQuestions = formData.sections.reduce(
 		(total, section) => total + section.questions.length,
@@ -264,41 +266,13 @@ function PreviewForm({
 									<div
 										key={questionIndex}
 										className="border-b border-gray-100 pb-4 last:border-b-0">
-										<div className="flex items-start justify-between mb-3">
+										<div className="flex items-start justify-between">
 											<h4 className="text-sm font-medium text-gray-900">
 												{questionIndex + 1}. {question.text || "Question text"}
 												{question.isRequired && (
 													<span className="text-red-500 ml-1">*</span>
 												)}
 											</h4>
-										</div>
-
-										{/* Scale Preview */}
-										<div className="ml-4">
-											<div className="flex items-center justify-between mb-2">
-												<span className="text-xs text-gray-500">
-													{question.scaleOptions.minLabel}
-												</span>
-												<span className="text-xs text-gray-500">
-													{question.scaleOptions.maxLabel}
-												</span>
-											</div>
-											<div className="flex items-center justify-between">
-												{question.scaleOptions.labels.map((label, index) => (
-													<div
-														key={index}
-														className="text-center">
-														<div className="w-8 h-8 border-2 border-gray-300 rounded-full mb-1 flex items-center justify-center hover:border-blue-500 cursor-pointer transition-colors">
-															<span className="text-xs text-gray-600">
-																{index + 1}
-															</span>
-														</div>
-														<span className="text-xs text-gray-500 block w-16 truncate">
-															{label}
-														</span>
-													</div>
-												))}
-											</div>
 										</div>
 									</div>
 								))}
@@ -308,7 +282,7 @@ function PreviewForm({
 				</div>
 			</div>
 
-			{/* Create Button */}
+			{/* Create/Update Button */}
 			<div className="flex justify-center">
 				<button
 					onClick={onCreateAssessment}
@@ -321,12 +295,12 @@ function PreviewForm({
 					{isCreating ? (
 						<>
 							<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-							Creating Assessment...
+							{isEditMode ? "Updating Assessment..." : "Creating Assessment..."}
 						</>
 					) : (
 						<>
 							<CheckCircle className="h-5 w-5 mr-2" />
-							Create Assessment
+							{isEditMode ? "Update Assessment" : "Create Assessment"}
 						</>
 					)}
 				</button>
@@ -338,14 +312,29 @@ function PreviewForm({
 					What happens next?
 				</h3>
 				<ul className="text-sm text-gray-600 space-y-1">
-					<li>• The assessment will be created and saved as a draft</li>
-					<li>
-						• You can assign it to students from the assessments dashboard
-					</li>
-					<li>
-						• Students will be able to see and take the assessment once assigned
-					</li>
-					<li>• You can view responses and analytics in real-time</li>
+					{isEditMode ? (
+						<>
+							<li>• The assessment will be updated with your changes</li>
+							<li>• Existing student responses will not be affected</li>
+							<li>
+								• New questions/sections will only appear for students who
+								haven&apos;t started yet
+							</li>
+							<li>• You can view updated analytics in real-time</li>
+						</>
+					) : (
+						<>
+							<li>• The assessment will be created and saved as active</li>
+							<li>
+								• You can assign it to students from the assessments dashboard
+							</li>
+							<li>
+								• Students will be able to see and take the assessment once
+								assigned
+							</li>
+							<li>• You can view responses and analytics in real-time</li>
+						</>
+					)}
 				</ul>
 			</div>
 		</div>

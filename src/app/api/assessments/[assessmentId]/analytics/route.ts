@@ -172,11 +172,33 @@ export async function GET(
 					.map((ss) => {
 						if (!ss) return null;
 						const student = studentMap.get(ss.studentId.toString());
+
+						// Construct student name with proper capitalization
+						let studentName = "Unknown Student";
+
+						if (student) {
+							if (student.firstName || student.lastName) {
+								const firstName = student.firstName || "";
+								const lastName = student.lastName || "";
+								studentName = `${firstName} ${lastName}`.trim();
+							} else if (student.name) {
+								studentName = student.name;
+							} else if (student.email) {
+								// Extract from email and capitalize first letter of each part
+								const emailName = student.email.split("@")[0];
+								const parts = emailName.split(".");
+								studentName = parts
+									.map(
+										(part: string) =>
+											part.charAt(0).toUpperCase() + part.slice(1)
+									)
+									.join(" ");
+							}
+						}
+
 						return {
 							studentId: ss.studentId,
-							studentName: student
-								? `${student.firstName} ${student.lastName}`
-								: "Unknown",
+							studentName,
 							email: student?.email || "",
 							course: student?.course || "",
 							batchName: student?.batchName || "",
@@ -230,9 +252,27 @@ export async function GET(
 					.filter((sb: { needsAttention: boolean }) => sb.needsAttention)
 					.map((sb: { sectionTitle: string }) => sb.sectionTitle);
 
+				// Construct student name with proper capitalization
+				let studentName = "Unknown Student";
+
+				if (student.firstName || student.lastName) {
+					const firstName = student.firstName || "";
+					const lastName = student.lastName || "";
+					studentName = `${firstName} ${lastName}`.trim();
+				} else if (student.name) {
+					studentName = student.name;
+				} else if (student.email) {
+					// Extract from email and capitalize first letter of each part
+					const emailName = student.email.split("@")[0];
+					const parts = emailName.split(".");
+					studentName = parts
+						.map((part: string) => part.charAt(0).toUpperCase() + part.slice(1))
+						.join(" ");
+				}
+
 				return {
 					_id: student._id,
-					name: `${student.firstName} ${student.lastName}`,
+					name: studentName,
 					email: student.email,
 					course: student.course,
 					batchName: student.batchName,

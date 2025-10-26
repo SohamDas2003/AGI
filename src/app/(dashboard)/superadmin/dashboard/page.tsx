@@ -3,13 +3,10 @@
 import React, { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import MetricsCards from "@/components/dashboard/metrics-cards";
-import PerformanceChart from "@/components/dashboard/performance-chart";
 import StudentTable from "@/components/dashboard/student-table";
-import ClassOverview from "@/components/dashboard/class-overview";
 import { Users, GraduationCap, Shield, Activity } from "lucide-react";
-import { DashboardMetrics } from "@/types";
+import { AnalyticsMetrics, DashboardMetrics } from "@/types";
 import { User } from "@/models/User";
-import { chartData, courseAnalytics, skillAnalytics } from "@/lib/mock-data";
 
 interface DashboardStats {
 	totalStudents: number;
@@ -25,16 +22,26 @@ function SuperAdminDashboard() {
 		activeStudents: 0,
 		totalUsers: 0,
 	});
+	const [analytics, setAnalytics] = useState<AnalyticsMetrics | null>(null);
 	const [students, setStudents] = useState<User[]>([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchStats = async () => {
 			try {
-				// Fetch users stats
-				const usersResponse = await fetch("/api/users/list?limit=1000");
-				if (usersResponse.ok) {
+				// Fetch users, students, and analytics data in parallel
+				const [usersResponse, studentsResponse, analyticsResponse] = await Promise.all([
+					fetch("/api/users/list?limit=1000"),
+					fetch("/api/students/list?limit=1000"),
+					fetch("/api/analytics"),
+				]);
+
+				if (usersResponse.ok && studentsResponse.ok && analyticsResponse.ok) {
 					const usersData = await usersResponse.json();
+					const studentsData = await studentsResponse.json();
+					const analyticsData = await analyticsResponse.json();
+
+					// Process users data
 					const admins = usersData.users.filter(
 						(user: { role: string }) => user.role === "ADMIN"
 					);
@@ -42,26 +49,26 @@ function SuperAdminDashboard() {
 						(user: { role: string }) => user.role === "STUDENT"
 					);
 
+					// Process students data
+					const activeStudents =
+						studentsData.students?.filter(
+							(student: { studentStatus: string }) =>
+								student.studentStatus === "Active"
+						) || [];
+
 					// Set the student users for the table
 					setStudents(studentUsers || []);
 
-					// Fetch students stats
-					const studentsResponse = await fetch("/api/students/list?limit=1000");
-					if (studentsResponse.ok) {
-						const studentsData = await studentsResponse.json();
-						const activeStudents =
-							studentsData.students?.filter(
-								(student: { studentStatus: string }) =>
-									student.studentStatus === "Active"
-							) || [];
+					// Set the dashboard stats
+					setStats({
+						totalStudents: studentUsers.length,
+						totalAdmins: admins.length,
+						activeStudents: activeStudents.length,
+						totalUsers: usersData.users.length,
+					});
 
-						setStats({
-							totalStudents: studentUsers.length,
-							totalAdmins: admins.length,
-							activeStudents: activeStudents.length,
-							totalUsers: usersData.users.length,
-						});
-					}
+					// Set analytics data
+					setAnalytics(analyticsData.metrics);
 				}
 			} catch (error) {
 				console.error("Error fetching stats:", error);
@@ -77,15 +84,15 @@ function SuperAdminDashboard() {
 	// Create superadmin-specific metrics
 	const superAdminMetrics: DashboardMetrics = {
 		totalStudents: stats.totalStudents,
-		totalStudentsChange: 8.3,
-		activeAssessments: Math.floor(stats.activeStudents * 0.8),
-		activeAssessmentsChange: 15.7,
-		completedAssessments: Math.floor(stats.activeStudents * 0.6),
-		completedAssessmentsChange: 23.1,
-		averageOverallScore: 0,
-		averageOverallScoreChange: 4.2,
-		placementRecommendationRate: 0,
-		placementRecommendationRateChange: 6.9,
+		totalStudentsChange: analytics?.totalStudentsChange || 0,
+		activeAssessments: analytics?.totalAssessments || 0,
+		activeAssessmentsChange: analytics?.activeAssessmentsChange || 0,
+		completedAssessments: analytics?.totalCompleted || 0,
+		completedAssessmentsChange: analytics?.completedAssessmentsChange || 0,
+		averageOverallScore: analytics?.overallAverageScore || 0,
+		averageOverallScoreChange: analytics?.averageOverallScoreChange || 0,
+		placementRecommendationRate: analytics?.placementRecommendationRate || 0,
+		placementRecommendationRateChange: analytics?.placementRecommendationRateChange || 0,
 	};
 
 	if (loading) {
@@ -177,19 +184,6 @@ function SuperAdminDashboard() {
 
 						{/* Metrics Cards */}
 						<MetricsCards metrics={superAdminMetrics} />
-
-						{/* Charts and Course Overview */}
-						<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-							<div className="lg:col-span-2">
-								<PerformanceChart data={chartData} />
-							</div>
-							<div className="lg:col-span-1">
-								<ClassOverview
-									courses={courseAnalytics}
-									skills={skillAnalytics}
-								/>
-							</div>
-						</div>
 
 						{/* Student Table */}
 						<StudentTable students={students} />

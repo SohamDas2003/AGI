@@ -276,6 +276,8 @@ export async function POST(
 			// Don't fail the submission if stats update fails
 		}
 
+
+
 		return NextResponse.json({
 			success: true,
 			message: isAutoSubmit

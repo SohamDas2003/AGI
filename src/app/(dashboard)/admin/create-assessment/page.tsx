@@ -233,42 +233,6 @@ function LocalBasicDetailsForm({
 						</div>
 					</div>
 				</div>
-
-				{/* Assignment Settings */}
-				<div className="mt-4 pt-4 border-t border-gray-200">
-					<label className="block text-sm font-medium text-gray-700 mb-2">
-						Assignment Settings
-					</label>
-					<div className="space-y-2">
-						<label className="flex items-center">
-							<input
-								type="checkbox"
-								checked={formData.autoAssign}
-								onChange={(e) =>
-									handleInputChange("autoAssign", e.target.checked)
-								}
-								className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-							/>
-							<span className="ml-2 text-sm text-gray-700">
-								Auto-assign to eligible students
-							</span>
-						</label>
-
-						<label className="flex items-center">
-							<input
-								type="checkbox"
-								checked={formData.assignOnLogin}
-								onChange={(e) =>
-									handleInputChange("assignOnLogin", e.target.checked)
-								}
-								className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-							/>
-							<span className="ml-2 text-sm text-gray-700">
-								Assign when students log in
-							</span>
-						</label>
-					</div>
-				</div>
 			</div>
 
 			{/* Validation Messages */}

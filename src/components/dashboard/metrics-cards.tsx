@@ -39,22 +39,26 @@ function MetricCard({
 
 	return (
 		<div
-			className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:scale-[1.02] group"
+			className="bg-white rounded-xl p-4 sm:p-6 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:scale-[1.02] group"
 			style={{ animationDelay: `${delay}ms` }}>
 			<div className="flex items-center justify-between">
-				<div>
-					<p className="text-sm font-medium text-gray-600">{title}</p>
-					<p className="text-3xl font-bold text-gray-900 mt-2">{value}</p>
+				<div className="flex-1 min-w-0">
+					<p className="text-xs sm:text-sm font-medium text-gray-600 truncate">
+						{title}
+					</p>
+					<p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2 truncate">
+						{value}
+					</p>
 				</div>
-				<div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center group-hover:bg-blue-100 transition-colors duration-200">
-					<Icon className="w-6 h-6 text-blue-600" />
+				<div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 rounded-lg flex items-center justify-center group-hover:bg-blue-100 transition-colors duration-200 flex-shrink-0 ml-2">
+					<Icon className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
 				</div>
 			</div>
 
-			<div className="mt-4 flex items-center space-x-2">
+			<div className="mt-3 sm:mt-4 flex items-center gap-2">
 				<div
 					className={cn(
-						"flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium",
+						"flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium flex-shrink-0",
 						isPositive
 							? "bg-green-100 text-green-800"
 							: "bg-red-100 text-red-800"
@@ -66,7 +70,9 @@ function MetricCard({
 					)}
 					<span>{Math.abs(change)}%</span>
 				</div>
-				<p className="text-sm text-gray-600">{description}</p>
+				<p className="text-xs sm:text-sm text-gray-600 truncate">
+					{description}
+				</p>
 			</div>
 		</div>
 	);
@@ -79,7 +85,7 @@ export default function MetricsCards({
 	return (
 		<div
 			className={cn(
-				"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6",
+				"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6",
 				className
 			)}>
 			<MetricCard

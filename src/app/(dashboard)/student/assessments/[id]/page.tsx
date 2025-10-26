@@ -181,29 +181,31 @@ export default function AssessmentDetailsPage() {
 	const StatusIcon = statusInfo?.icon || BookOpen;
 
 	return (
-		<div className="max-w-4xl mx-auto space-y-6">
+		<div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
 			{/* Header */}
-			<div className="bg-white rounded-lg border border-gray-200 p-6">
-				<div className="flex items-center justify-between mb-4">
-					<div className="flex items-center space-x-4">
+			<div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+				<div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+					<div className="flex items-start space-x-3 sm:space-x-4 flex-1 min-w-0">
 						<Link
 							href="/student/assessments"
-							className="text-gray-600 hover:text-gray-900">
+							className="text-gray-600 hover:text-gray-900 flex-shrink-0 mt-1">
 							<ArrowLeft className="w-5 h-5" />
 						</Link>
-						<div>
-							<h1 className="text-2xl font-bold text-gray-900">
+						<div className="flex-1 min-w-0">
+							<h1 className="text-xl sm:text-2xl font-bold text-gray-900 break-words">
 								{assessment.title}
 							</h1>
 							{assessment.description && (
-								<p className="text-gray-600">{assessment.description}</p>
+								<p className="text-sm sm:text-base text-gray-600 mt-1 break-words">
+									{assessment.description}
+								</p>
 							)}
 						</div>
 					</div>
 
 					{statusInfo && (
 						<div
-							className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${statusInfo.bgColor} ${statusInfo.color}`}>
+							className={`inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm font-medium flex-shrink-0 ${statusInfo.bgColor} ${statusInfo.color}`}>
 							<StatusIcon className="w-4 h-4 mr-2" />
 							{statusInfo.label}
 						</div>
@@ -211,53 +213,55 @@ export default function AssessmentDetailsPage() {
 				</div>
 
 				{/* Assessment Metadata */}
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg">
+				<div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-lg">
 					<div className="text-center">
-						<div className="text-2xl font-bold text-blue-600 mb-1">
+						<div className="text-xl sm:text-2xl font-bold text-blue-600 mb-1">
 							{getTotalQuestions()}
 						</div>
-						<div className="text-sm text-gray-600">Total Questions</div>
+						<div className="text-xs sm:text-sm text-gray-600">
+							Total Questions
+						</div>
 					</div>
 
 					<div className="text-center">
-						<div className="text-2xl font-bold text-green-600 mb-1">
+						<div className="text-xl sm:text-2xl font-bold text-green-600 mb-1">
 							{assessment.sections.length}
 						</div>
-						<div className="text-sm text-gray-600">Sections</div>
+						<div className="text-xs sm:text-sm text-gray-600">Sections</div>
 					</div>
 
 					<div className="text-center">
-						<div className="text-2xl font-bold text-orange-600 mb-1">
+						<div className="text-xl sm:text-2xl font-bold text-orange-600 mb-1">
 							{getRequiredQuestions()}
 						</div>
-						<div className="text-sm text-gray-600">Required Questions</div>
+						<div className="text-xs sm:text-sm text-gray-600">
+							Required Questions
+						</div>
 					</div>
 
 					{assessment.timeLimit && (
 						<div className="text-center">
-							<div className="text-2xl font-bold text-purple-600 mb-1">
+							<div className="text-xl sm:text-2xl font-bold text-purple-600 mb-1">
 								{assessment.timeLimit}
 							</div>
-							<div className="text-sm text-gray-600">Minutes</div>
+							<div className="text-xs sm:text-sm text-gray-600">Minutes</div>
 						</div>
 					)}
 				</div>
 
 				{/* Attempt Information */}
 				{(assessment.attempts !== undefined || assessment.lastAttemptAt) && (
-					<div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-						<div className="flex items-center space-x-4">
+					<div className="mt-4 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg">
+						<div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
 							{assessment.attempts !== undefined && (
-								<div>
-									<span className="text-sm text-blue-600 font-medium">
-										Attempts:{" "}
-									</span>
+								<div className="text-sm">
+									<span className="text-blue-600 font-medium">Attempts: </span>
 									<span className="text-blue-800">{assessment.attempts}</span>
 								</div>
 							)}
 							{assessment.lastAttemptAt && (
-								<div>
-									<span className="text-sm text-blue-600 font-medium">
+								<div className="text-sm">
+									<span className="text-blue-600 font-medium">
 										Last Attempt:{" "}
 									</span>
 									<span className="text-blue-800">
@@ -273,131 +277,31 @@ export default function AssessmentDetailsPage() {
 
 			{/* Instructions */}
 			{assessment.instructions && (
-				<div className="bg-white rounded-lg border border-gray-200 p-6">
-					<h2 className="text-xl font-semibold text-gray-900 mb-4">
+				<div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+					<h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">
 						Instructions
 					</h2>
-					<div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-						<p className="text-blue-900 whitespace-pre-wrap">
+					<div className="bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4">
+						<p className="text-sm sm:text-base text-blue-900 whitespace-pre-wrap break-words">
 							{assessment.instructions}
 						</p>
 					</div>
 				</div>
 			)}
 
-			{/* Sections Overview */}
-			<div className="bg-white rounded-lg border border-gray-200 p-6">
-				<h2 className="text-xl font-semibold text-gray-900 mb-6">
-					Assessment Sections
-				</h2>
-
-				<div className="space-y-4">
-					{assessment.sections.map((section, index) => (
-						<div
-							key={section._id}
-							className="border border-gray-200 rounded-lg p-4">
-							<div className="flex items-start justify-between mb-3">
-								<div className="flex-1">
-									<h3 className="text-lg font-semibold text-gray-900">
-										Section {index + 1}: {section.title}
-									</h3>
-									{section.description && (
-										<p className="text-gray-600 mt-1">{section.description}</p>
-									)}
-								</div>
-
-								<div className="flex items-center space-x-4 ml-4">
-									<div className="text-center">
-										<div className="text-lg font-semibold text-blue-600">
-											{section.questions.length}
-										</div>
-										<div className="text-xs text-gray-500">Questions</div>
-									</div>
-
-									<div className="text-center">
-										<div className="text-lg font-semibold text-green-600">
-											{section.questions.filter((q) => q.isRequired).length}
-										</div>
-										<div className="text-xs text-gray-500">Required</div>
-									</div>
-								</div>
-							</div>
-
-							{/* Question Preview */}
-							<div className="mt-4">
-								<h4 className="font-medium text-gray-900 mb-2">
-									Sample Questions:
-								</h4>
-								<div className="space-y-2">
-									{section.questions.slice(0, 3).map((question, qIndex) => (
-										<div
-											key={question._id}
-											className="text-sm text-gray-600 flex items-start space-x-2">
-											<span className="text-gray-400 mt-0.5">
-												{index + 1}.{qIndex + 1}
-											</span>
-											<span className="flex-1">
-												{question.text}
-												{question.isRequired && (
-													<span className="text-red-500 ml-1">*</span>
-												)}
-											</span>
-										</div>
-									))}
-									{section.questions.length > 3 && (
-										<div className="text-sm text-gray-500 italic ml-6">
-											... and {section.questions.length - 3} more questions
-										</div>
-									)}
-								</div>
-							</div>
-
-							{/* Scale Information */}
-							{section.questions.length > 0 && (
-								<div className="mt-4 p-3 bg-gray-50 rounded-lg">
-									<div className="text-sm text-gray-600 mb-2">
-										Rating Scale:
-									</div>
-									<div className="flex items-center justify-between text-xs text-gray-500">
-										<span>{section.questions[0].scaleOptions.minLabel}</span>
-										<div className="flex space-x-1">
-											{section.questions[0].scaleOptions.labels.map(
-												(label, labelIndex) => (
-													<div
-														key={labelIndex}
-														className="text-center">
-														<div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-xs">
-															{labelIndex + 1}
-														</div>
-														<div className="mt-1 max-w-12 text-center leading-tight">
-															{label}
-														</div>
-													</div>
-												)
-											)}
-										</div>
-										<span>{section.questions[0].scaleOptions.maxLabel}</span>
-									</div>
-								</div>
-							)}
-						</div>
-					))}
-				</div>
-			</div>
-
 			{/* Assessment Info */}
-			<div className="bg-white rounded-lg border border-gray-200 p-6">
-				<h2 className="text-xl font-semibold text-gray-900 mb-4">
+			<div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+				<h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">
 					Assessment Information
 				</h2>
 
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
 					<div className="space-y-4">
 						<div className="flex items-center space-x-3">
-							<Calendar className="w-5 h-5 text-gray-500" />
-							<div>
-								<div className="text-sm text-gray-600">Created</div>
-								<div className="font-medium">
+							<Calendar className="w-5 h-5 text-gray-500 flex-shrink-0" />
+							<div className="min-w-0">
+								<div className="text-xs sm:text-sm text-gray-600">Created</div>
+								<div className="text-sm sm:text-base font-medium break-words">
 									{new Date(assessment.createdAt).toLocaleDateString()}
 								</div>
 							</div>
@@ -405,10 +309,12 @@ export default function AssessmentDetailsPage() {
 
 						{assessment.updatedAt !== assessment.createdAt && (
 							<div className="flex items-center space-x-3">
-								<Clock className="w-5 h-5 text-gray-500" />
-								<div>
-									<div className="text-sm text-gray-600">Last Updated</div>
-									<div className="font-medium">
+								<Clock className="w-5 h-5 text-gray-500 flex-shrink-0" />
+								<div className="min-w-0">
+									<div className="text-xs sm:text-sm text-gray-600">
+										Last Updated
+									</div>
+									<div className="text-sm sm:text-base font-medium break-words">
 										{new Date(assessment.updatedAt).toLocaleDateString()}
 									</div>
 								</div>
@@ -418,10 +324,10 @@ export default function AssessmentDetailsPage() {
 
 					<div className="space-y-4">
 						<div className="flex items-center space-x-3">
-							<Users className="w-5 h-5 text-gray-500" />
-							<div>
-								<div className="text-sm text-gray-600">Status</div>
-								<div className="font-medium">
+							<Users className="w-5 h-5 text-gray-500 flex-shrink-0" />
+							<div className="min-w-0">
+								<div className="text-xs sm:text-sm text-gray-600">Status</div>
+								<div className="text-sm sm:text-base font-medium">
 									{assessment.isPublished ? "Published" : "Draft"}
 								</div>
 							</div>
@@ -429,10 +335,12 @@ export default function AssessmentDetailsPage() {
 
 						{assessment.timeLimit && (
 							<div className="flex items-center space-x-3">
-								<Clock className="w-5 h-5 text-gray-500" />
-								<div>
-									<div className="text-sm text-gray-600">Time Limit</div>
-									<div className="font-medium">
+								<Clock className="w-5 h-5 text-gray-500 flex-shrink-0" />
+								<div className="min-w-0">
+									<div className="text-xs sm:text-sm text-gray-600">
+										Time Limit
+									</div>
+									<div className="text-sm sm:text-base font-medium">
 										{assessment.timeLimit} minutes
 									</div>
 								</div>
@@ -443,13 +351,13 @@ export default function AssessmentDetailsPage() {
 			</div>
 
 			{/* Sections Quick Names */}
-			<div className="bg-white rounded-lg border border-gray-200 p-4">
-				<div className="text-sm text-gray-600 mb-2">Sections</div>
-				<div className="flex space-x-2 overflow-x-auto">
+			<div className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
+				<div className="text-xs sm:text-sm text-gray-600 mb-2">Sections</div>
+				<div className="flex gap-2 overflow-x-auto pb-2">
 					{assessment.sections.map((section, idx) => (
 						<div
 							key={section._id}
-							className="flex-none px-3 py-2 bg-gray-50 rounded-md text-xs text-gray-700">
+							className="flex-none px-2 sm:px-3 py-1 sm:py-2 bg-gray-50 rounded-md text-xs text-gray-700 whitespace-nowrap">
 							{idx + 1}. {section.title}
 						</div>
 					))}
@@ -457,33 +365,33 @@ export default function AssessmentDetailsPage() {
 			</div>
 
 			{/* Actions */}
-			<div className="flex items-center justify-between bg-white rounded-lg border border-gray-200 p-4">
+			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
 				<Link
 					href="/student/assessments"
-					className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50">
+					className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-sm sm:text-base text-gray-700 bg-white hover:bg-gray-50 transition-colors">
 					<ArrowLeft className="w-4 h-4 mr-2" />
 					Back to Assessments
 				</Link>
 
-				<div className="flex space-x-3">
+				<div className="flex flex-col sm:flex-row gap-3">
 					{assessment.isCompleted ? (
 						<Link
 							href={`/student/assessments/${assessmentId}/results`}
-							className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+							className="inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white text-sm sm:text-base rounded-lg hover:bg-green-700 transition-colors">
 							<Eye className="w-4 h-4 mr-2" />
 							View Results
 						</Link>
 					) : assessment.isAssigned ? (
 						<Link
 							href={`/student/assessments/${assessmentId}/take`}
-							className="inline-flex items-center px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+							className="inline-flex items-center justify-center px-6 py-2 bg-blue-600 text-white text-sm sm:text-base rounded-lg hover:bg-blue-700 font-medium transition-colors">
 							<Play className="w-4 h-4 mr-2" />
 							{assessment.hasStarted
 								? "Continue Assessment"
 								: "Start Assessment"}
 						</Link>
 					) : (
-						<div className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-500 rounded-lg cursor-not-allowed">
+						<div className="inline-flex items-center justify-center px-4 py-2 bg-gray-100 text-gray-500 text-sm sm:text-base rounded-lg cursor-not-allowed">
 							<AlertTriangle className="w-4 h-4 mr-2" />
 							Not Available
 						</div>

@@ -42,7 +42,7 @@ export default function StudentAssessmentsPage() {
 	const [assessments, setAssessments] = useState<AssessmentItem[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	const [filter, setFilter] = useState<"all" | "assigned" | "completed">("all");
+	const [filter, setFilter] = useState<"assigned" | "completed">("assigned");
 
 	useEffect(() => {
 		fetchAssessments();
@@ -143,35 +143,35 @@ export default function StudentAssessmentsPage() {
 
 	return (
 		<ProtectedRoute allowedRoles={["STUDENT"]}>
-			<div className="space-y-6">
+			<div className="space-y-4 sm:space-y-6">
 				{/* Header */}
-				<div className="flex items-center justify-between">
-					<div>
-						<h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-							<Target className="h-8 w-8 text-blue-600" />
-							My Assessments
+				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+					<div className="min-w-0 flex-1">
+						<h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-2 sm:gap-3">
+							<Target className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 flex-shrink-0" />
+							<span className="break-words">My Assessments</span>
 						</h1>
-						<p className="text-gray-600 mt-1">
+						<p className="text-gray-600 mt-1 text-sm sm:text-base">
 							View and take your assigned assessments
 						</p>
 					</div>
 					<button
 						onClick={fetchAssessments}
-						className="flex items-center gap-2 px-4 py-2 text-blue-600 border border-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+						className="flex items-center justify-center gap-2 px-4 py-2 text-blue-600 border border-blue-600 hover:bg-blue-50 rounded-lg transition-colors w-full sm:w-auto flex-shrink-0">
 						<RefreshCw className="h-4 w-4" />
-						Refresh
+						<span>Refresh</span>
 					</button>
 				</div>
 
 				{/* Disclaimer */}
-				<div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-					<div className="flex items-start gap-3">
+				<div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 sm:p-4">
+					<div className="flex items-start gap-2 sm:gap-3">
 						<AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
-						<div>
-							<h3 className="font-medium text-yellow-800 mb-1">
+						<div className="min-w-0 flex-1">
+							<h3 className="font-medium text-yellow-800 mb-1 text-sm sm:text-base">
 								Important Disclaimer
 							</h3>
-							<p className="text-yellow-700 text-sm">
+							<p className="text-yellow-700 text-xs sm:text-sm break-words">
 								The purpose of this test is to help students identify their
 								strengths and areas of improvement. Results are for guidance
 								only and do not guarantee placement outcomes.
@@ -182,15 +182,19 @@ export default function StudentAssessmentsPage() {
 
 				{/* Error Display */}
 				{error && (
-					<div className="bg-red-50 border border-red-200 rounded-lg p-4">
+					<div className="bg-red-50 border border-red-200 rounded-lg p-3 sm:p-4">
 						<div className="flex items-center gap-2">
-							<AlertCircle className="h-5 w-5 text-red-600" />
-							<span className="text-red-800 font-medium">Error</span>
+							<AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+							<span className="text-red-800 font-medium text-sm sm:text-base">
+								Error
+							</span>
 						</div>
-						<p className="text-red-700 mt-1">{error}</p>
+						<p className="text-red-700 mt-1 text-xs sm:text-sm break-words">
+							{error}
+						</p>
 						<button
 							onClick={fetchAssessments}
-							className="mt-3 text-red-600 hover:text-red-800 underline">
+							className="mt-3 text-red-600 hover:text-red-800 underline text-xs sm:text-sm">
 							Try again
 						</button>
 					</div>
@@ -198,13 +202,8 @@ export default function StudentAssessmentsPage() {
 
 				{/* Filter Tabs */}
 				<div className="border-b border-gray-200">
-					<nav className="-mb-px flex space-x-8">
+					<nav className="-mb-px flex space-x-4 sm:space-x-8">
 						{[
-							{
-								key: "all",
-								label: "All Assessments",
-								count: assessments.length,
-							},
 							{
 								key: "assigned",
 								label: "Assigned",
@@ -221,13 +220,13 @@ export default function StudentAssessmentsPage() {
 							<button
 								key={tab.key}
 								onClick={() => setFilter(tab.key as typeof filter)}
-								className={`py-2 px-1 border-b-2 font-medium text-sm ${
+								className={`py-2 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap ${
 									filter === tab.key
 										? "border-blue-500 text-blue-600"
 										: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
 								}`}>
 								{tab.label}
-								<span className="ml-2 bg-gray-100 text-gray-600 py-0.5 px-2 rounded-full text-xs">
+								<span className="ml-1 sm:ml-2 bg-gray-100 text-gray-600 py-0.5 px-1.5 sm:px-2 rounded-full text-xs">
 									{tab.count}
 								</span>
 							</button>
@@ -242,16 +241,12 @@ export default function StudentAssessmentsPage() {
 							<FileText className="w-16 h-16 mx-auto" />
 						</div>
 						<h3 className="text-lg font-medium text-gray-900 mb-2">
-							{filter === "all"
-								? "No assessments available"
-								: `No ${filter} assessments`}
+							No {filter} assessments
 						</h3>
 						<p className="text-gray-600 mb-4">
 							{filter === "assigned"
 								? "You don't have any pending assessments to complete."
-								: filter === "completed"
-								? "You haven't completed any assessments yet."
-								: "No assessments have been assigned to your course yet."}
+								: "You haven't completed any assessments yet."}
 						</p>
 						<button
 							onClick={fetchAssessments}
@@ -265,67 +260,75 @@ export default function StudentAssessmentsPage() {
 						{filteredAssessments.map((assessment) => (
 							<div
 								key={assessment._id}
-								className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+								className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 hover:shadow-md transition-shadow">
 								<div className="flex items-start justify-between">
-									<div className="flex-1">
-										<div className="flex items-start justify-between mb-3">
-											<div>
-												<h3 className="text-xl font-semibold text-gray-900 mb-1">
+									<div className="flex-1 min-w-0">
+										<div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
+											<div className="min-w-0 flex-1">
+												<h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-1 break-words">
 													{assessment.title}
 												</h3>
-												<div className="flex items-center space-x-4 text-sm text-gray-600">
+												<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm text-gray-600">
 													<span className="flex items-center gap-1">
-														<Target className="h-3 w-3" />
-														<span className="font-medium">
+														<Target className="h-3 w-3 flex-shrink-0" />
+														<span className="font-medium truncate">
 															{assessment.course}
 														</span>
 													</span>
 													{assessment.batch && assessment.batch !== "ALL" && (
 														<>
-															<span>•</span>
-															<span>{assessment.batch}</span>
+															<span className="hidden sm:inline">•</span>
+															<span className="truncate">
+																{assessment.batch}
+															</span>
 														</>
 													)}
-													<span>•</span>
+													<span className="hidden sm:inline">•</span>
 													<span className="flex items-center gap-1">
-														<Calendar className="h-3 w-3" />
-														Created
+														<Calendar className="h-3 w-3 flex-shrink-0" />
+														<span>Created</span>
 													</span>
 												</div>
 											</div>
-											{getStatusBadge(assessment)}
+											<div className="flex-shrink-0">
+												{getStatusBadge(assessment)}
+											</div>
 										</div>
 
 										{assessment.description && (
-											<p className="text-gray-600 mb-4 line-clamp-2">
+											<p className="text-gray-600 mb-4 line-clamp-2 text-sm sm:text-base break-words">
 												{assessment.description}
 											</p>
 										)}
 
 										{/* Assessment Info */}
-										<div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-											<div className="flex items-center text-sm text-gray-600">
-												<Users className="w-4 h-4 mr-2" />
-												<span>{assessment.totalQuestions} Questions</span>
+										<div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
+											<div className="flex items-center text-xs sm:text-sm text-gray-600">
+												<Users className="w-4 h-4 mr-2 flex-shrink-0" />
+												<span className="truncate">
+													{assessment.totalQuestions} Questions
+												</span>
 											</div>
 											{assessment.timeLimit && (
-												<div className="flex items-center text-sm text-gray-600">
-													<Clock className="w-4 h-4 mr-2" />
-													<span>{assessment.timeLimit} minutes</span>
+												<div className="flex items-center text-xs sm:text-sm text-gray-600">
+													<Clock className="w-4 h-4 mr-2 flex-shrink-0" />
+													<span className="truncate">
+														{assessment.timeLimit} minutes
+													</span>
 												</div>
 											)}
-											<div className="flex items-center text-sm text-gray-600">
+											<div className="flex items-center text-xs sm:text-sm text-gray-600">
 												<span className="font-medium">Attempts:</span>
-												<span className="ml-1">
+												<span className="ml-1 truncate">
 													{assessment.attempts.current} /{" "}
 													{assessment.attempts.max}
 												</span>
 											</div>
 											{assessment.lastAttempt &&
 												assessment.lastAttempt.score !== undefined && (
-													<div className="flex items-center text-sm text-gray-600">
+													<div className="flex items-center text-xs sm:text-sm text-gray-600">
 														<span className="font-medium">Score:</span>
-														<span className="ml-1">
+														<span className="ml-1 truncate">
 															{assessment.lastAttempt.score}%
 														</span>
 													</div>
@@ -335,7 +338,7 @@ export default function StudentAssessmentsPage() {
 										{/* Last Attempt Info */}
 										{assessment.lastAttempt && (
 											<div className="bg-green-50 border border-green-200 rounded p-3 mb-4">
-												<p className="text-green-800 text-sm">
+												<p className="text-green-800 text-xs sm:text-sm break-words">
 													Completed on{" "}
 													{new Date(
 														assessment.lastAttempt.completedAt
@@ -353,10 +356,10 @@ export default function StudentAssessmentsPage() {
 										{/* Instructions Preview */}
 										{assessment.instructions && (
 											<div className="bg-blue-50 border border-blue-200 rounded p-3 mb-4">
-												<h4 className="font-medium text-blue-900 mb-1">
+												<h4 className="font-medium text-blue-900 mb-1 text-sm sm:text-base">
 													Instructions:
 												</h4>
-												<p className="text-blue-800 text-sm line-clamp-2">
+												<p className="text-blue-800 text-xs sm:text-sm line-clamp-2 break-words">
 													{assessment.instructions}
 												</p>
 											</div>
@@ -365,43 +368,45 @@ export default function StudentAssessmentsPage() {
 								</div>
 
 								{/* Action Buttons */}
-								<div className="flex items-center justify-between pt-4 border-t border-gray-200">
-									<div className="flex space-x-3">
+								<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4 border-t border-gray-200">
+									<div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
 										{canTakeAssessment(assessment) ? (
 											<Link
 												href={`/student/assessments/${assessment._id}/take`}
-												className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
-												<PlayCircle className="w-4 h-4 mr-2" />
-												{assessment.attempts.current > 0
-													? "Retake Assessment"
-													: "Start Assessment"}
+												className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm w-full sm:w-auto">
+												<PlayCircle className="w-4 h-4 mr-2 flex-shrink-0" />
+												<span>
+													{assessment.attempts.current > 0
+														? "Retake Assessment"
+														: "Start Assessment"}
+												</span>
 											</Link>
 										) : assessment.lastAttempt ? (
 											<Link
 												href={`/student/assessments/${assessment._id}/results`}
-												className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium">
-												<Eye className="w-4 h-4 mr-2" />
-												View Results
+												className="inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium text-sm w-full sm:w-auto">
+												<Eye className="w-4 h-4 mr-2 flex-shrink-0" />
+												<span>View Results</span>
 											</Link>
 										) : (
 											<button
 												disabled
-												className="inline-flex items-center px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed font-medium">
-												<AlertCircle className="w-4 h-4 mr-2" />
-												Not Available
+												className="inline-flex items-center justify-center px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed font-medium text-sm w-full sm:w-auto">
+												<AlertCircle className="w-4 h-4 mr-2 flex-shrink-0" />
+												<span>Not Available</span>
 											</button>
 										)}
 
 										<Link
 											href={`/student/assessments/${assessment._id}`}
-											className="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium">
-											<Eye className="w-4 h-4 mr-2" />
-											View Details
+											className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-sm w-full sm:w-auto">
+											<Eye className="w-4 h-4 mr-2 flex-shrink-0" />
+											<span>View Details</span>
 										</Link>
 									</div>
 
 									{assessment.dueDate && (
-										<div className="text-sm text-gray-500">
+										<div className="text-xs sm:text-sm text-gray-500 text-center sm:text-right flex-shrink-0">
 											Due: {new Date(assessment.dueDate).toLocaleDateString()}
 										</div>
 									)}

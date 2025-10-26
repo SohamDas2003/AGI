@@ -34,15 +34,9 @@ const createNewQuestion = (): Question => ({
 	scaleOptions: {
 		min: 1,
 		max: 5,
-		minLabel: "Strongly Disagree",
-		maxLabel: "Strongly Agree",
-		labels: [
-			"Strongly Disagree",
-			"Disagree",
-			"Neutral",
-			"Agree",
-			"Strongly Agree",
-		],
+		minLabel: "Beginner",
+		maxLabel: "Expert",
+		labels: ["Beginner", "Elementary", "Intermediate", "Advanced", "Expert"],
 	},
 });
 
@@ -316,31 +310,6 @@ function SectionsForm({ formData, updateFormData }: SectionsFormProps) {
 																<label className="ml-2 text-sm text-gray-700">
 																	Required question
 																</label>
-															</div>
-
-															{/* Scale Preview */}
-															<div className="bg-white border border-gray-200 rounded p-3">
-																<p className="text-xs text-gray-600 mb-2">
-																	Scale Preview:
-																</p>
-																<div className="flex items-center justify-between text-xs text-gray-500">
-																	<span>{question.scaleOptions.minLabel}</span>
-																	<div className="flex space-x-2">
-																		{question.scaleOptions.labels.map(
-																			(label, index) => (
-																				<div
-																					key={index}
-																					className="text-center">
-																					<div className="w-6 h-6 border border-gray-300 rounded-full mb-1"></div>
-																					<span className="text-xs">
-																						{index + 1}
-																					</span>
-																				</div>
-																			)
-																		)}
-																	</div>
-																	<span>{question.scaleOptions.maxLabel}</span>
-																</div>
 															</div>
 														</div>
 													</div>

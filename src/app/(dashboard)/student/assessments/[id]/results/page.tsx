@@ -212,30 +212,32 @@ export default function AssessmentResultsPage() {
 	const overallStats = calculateOverallStats();
 
 	return (
-		<div className="max-w-6xl mx-auto space-y-6">
+		<div className="w-full max-w-6xl mx-auto space-y-4 sm:space-y-6">
 			{/* Header */}
-			<div className="bg-white rounded-lg border border-gray-200 p-6">
-				<div className="flex items-center justify-between mb-4">
-					<div className="flex items-center space-x-4">
+			<div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+					<div className="flex items-start space-x-3 sm:space-x-4 flex-1 min-w-0">
 						<Link
 							href="/student/assessments"
-							className="text-gray-600 hover:text-gray-900">
+							className="text-gray-600 hover:text-gray-900 flex-shrink-0 mt-1">
 							<ArrowLeft className="w-5 h-5" />
 						</Link>
-						<div>
-							<h1 className="text-2xl font-bold text-gray-900">
+						<div className="flex-1 min-w-0">
+							<h1 className="text-xl sm:text-2xl font-bold text-gray-900 break-words">
 								{response.assessment.title}
 							</h1>
-							<p className="text-gray-600">Assessment Results</p>
+							<p className="text-sm sm:text-base text-gray-600">
+								Assessment Results
+							</p>
 						</div>
 					</div>
 
-					<div className="flex items-center space-x-4">
+					<div className="flex items-center justify-center sm:justify-end flex-shrink-0">
 						<div className="text-center">
-							<div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
-								<CheckCircle className="w-8 h-8 text-green-600" />
+							<div className="w-14 h-14 sm:w-16 sm:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+								<CheckCircle className="w-7 h-7 sm:w-8 sm:h-8 text-green-600" />
 							</div>
-							<span className="text-sm font-medium text-green-600">
+							<span className="text-xs sm:text-sm font-medium text-green-600">
 								Completed
 							</span>
 						</div>
@@ -243,31 +245,33 @@ export default function AssessmentResultsPage() {
 				</div>
 
 				{/* Submission Info */}
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-lg">
 					<div className="flex items-center space-x-3">
-						<Calendar className="w-5 h-5 text-gray-500" />
-						<div>
-							<div className="text-sm text-gray-600">Submitted</div>
-							<div className="font-medium">
+						<Calendar className="w-5 h-5 text-gray-500 flex-shrink-0" />
+						<div className="min-w-0">
+							<div className="text-xs sm:text-sm text-gray-600">Submitted</div>
+							<div className="text-sm sm:text-base font-medium truncate">
 								{new Date(response.submittedAt).toLocaleDateString()} at{" "}
 								{new Date(response.submittedAt).toLocaleTimeString()}
 							</div>
 						</div>
 					</div>
 					<div className="flex items-center space-x-3">
-						<Clock className="w-5 h-5 text-gray-500" />
-						<div>
-							<div className="text-sm text-gray-600">Time Spent</div>
-							<div className="font-medium">
+						<Clock className="w-5 h-5 text-gray-500 flex-shrink-0" />
+						<div className="min-w-0">
+							<div className="text-xs sm:text-sm text-gray-600">Time Spent</div>
+							<div className="text-sm sm:text-base font-medium">
 								{formatTime(response.timeSpent)}
 							</div>
 						</div>
 					</div>
 					<div className="flex items-center space-x-3">
-						<User className="w-5 h-5 text-gray-500" />
-						<div>
-							<div className="text-sm text-gray-600">Questions Answered</div>
-							<div className="font-medium">
+						<User className="w-5 h-5 text-gray-500 flex-shrink-0" />
+						<div className="min-w-0">
+							<div className="text-xs sm:text-sm text-gray-600">
+								Questions Answered
+							</div>
+							<div className="text-sm sm:text-base font-medium">
 								{overallStats?.answeredQuestions} /{" "}
 								{overallStats?.totalQuestions}
 							</div>
@@ -278,90 +282,104 @@ export default function AssessmentResultsPage() {
 
 			{/* Overall Statistics */}
 			{overallStats && (
-				<div className="bg-white rounded-lg border border-gray-200 p-6">
-					<h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+				<div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+					<h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 flex items-center">
 						<BarChart3 className="w-5 h-5 mr-2" />
 						Overall Performance
 					</h2>
 
-					<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+					<div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
 						<div className="text-center">
 							<div
-								className={`text-3xl font-bold mb-1 ${getScoreColor(
+								className={`text-2xl sm:text-3xl font-bold mb-1 ${getScoreColor(
 									response.overallAverageRating || overallStats.overallAverage
 								)}`}>
 								{(
 									response.overallAverageRating || overallStats.overallAverage
 								).toFixed(1)}
 							</div>
-							<div className="text-sm text-gray-600">Average Rating</div>
+							<div className="text-xs sm:text-sm text-gray-600">
+								Average Rating
+							</div>
 							<div className="text-xs text-gray-500">out of 5.0</div>
 						</div>
 
 						<div className="text-center">
 							<div
-								className={`text-3xl font-bold mb-1 ${getScoreColor(
+								className={`text-2xl sm:text-3xl font-bold mb-1 ${getScoreColor(
 									(response.overallPercentage || 0) / 20
 								)}`}>
 								{(response.overallPercentage || 0).toFixed(1)}%
 							</div>
-							<div className="text-sm text-gray-600">Overall Score</div>
+							<div className="text-xs sm:text-sm text-gray-600">
+								Overall Score
+							</div>
 						</div>
 
 						<div className="text-center">
-							<div className="text-3xl font-bold text-purple-600 mb-1">
+							<div className="text-2xl sm:text-3xl font-bold text-purple-600 mb-1">
 								{overallStats.answeredQuestions}
 							</div>
-							<div className="text-sm text-gray-600">Questions Answered</div>
+							<div className="text-xs sm:text-sm text-gray-600">
+								Questions Answered
+							</div>
 						</div>
 
 						<div className="text-center">
-							<div className="text-3xl font-bold text-indigo-600 mb-1">
+							<div className="text-2xl sm:text-3xl font-bold text-indigo-600 mb-1">
 								{response.assessment.sections.length}
 							</div>
-							<div className="text-sm text-gray-600">Sections Completed</div>
+							<div className="text-xs sm:text-sm text-gray-600">
+								Sections Completed
+							</div>
 						</div>
 					</div>
 				</div>
 			)}
 
 			{/* Section-wise Results */}
-			<div className="bg-white rounded-lg border border-gray-200 p-6">
-				<h2 className="text-xl font-semibold text-gray-900 mb-6">
+			<div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+				<h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">
 					Section-wise Results
 				</h2>
 
 				{/* Section Performance Summary */}
 				{response.sectionScores && response.sectionScores.length > 0 && (
-					<div className="mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+					<div className="mb-4 sm:mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
 						{response.sectionScores.map((sectionScore) => (
 							<div
 								key={sectionScore.sectionId}
-								className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-								<h4 className="font-medium text-gray-900 mb-2">
+								className="border border-gray-200 rounded-lg p-3 sm:p-4 bg-gray-50">
+								<h4 className="font-medium text-gray-900 mb-2 break-words text-sm sm:text-base">
 									{sectionScore.sectionTitle}
 								</h4>
 								<div className="flex items-center justify-between mb-2">
-									<span className="text-sm text-gray-600">Score:</span>
+									<span className="text-xs sm:text-sm text-gray-600">
+										Score:
+									</span>
 									<span
-										className={`text-xl font-bold ${getScoreColor(
+										className={`text-lg sm:text-xl font-bold ${getScoreColor(
 											sectionScore.percentage / 20
 										)}`}>
 										{sectionScore.percentage.toFixed(1)}%
 									</span>
 								</div>
 								<div className="flex items-center justify-between mb-2">
-									<span className="text-sm text-gray-600">Avg Rating:</span>
+									<span className="text-xs sm:text-sm text-gray-600">
+										Avg Rating:
+									</span>
 									<span
-										className={`font-semibold ${getScoreColor(
+										className={`font-semibold text-sm sm:text-base ${getScoreColor(
 											sectionScore.averageRating
 										)}`}>
 										{sectionScore.averageRating.toFixed(1)} / 5
 									</span>
 								</div>
 								<div className="flex items-center justify-between">
-									<span className="text-sm text-gray-600">Completed:</span>
-									<span className="font-medium text-gray-900">
+									<span className="text-xs sm:text-sm text-gray-600">
+										Completed:
+									</span>
+									<span className="font-medium text-gray-900 text-sm sm:text-base">
 										{sectionScore.questionsAnswered} /{" "}
 										{sectionScore.totalQuestions}
 									</span>
@@ -376,65 +394,71 @@ export default function AssessmentResultsPage() {
 					</div>
 				)}
 
-				<div className="space-y-6">
+				<div className="space-y-4 sm:space-y-6">
 					{response.assessment.sections.map((section, index) => {
 						const stats = calculateSectionStats(section);
 
 						return (
 							<div
 								key={section._id}
-								className="border border-gray-200 rounded-lg p-6">
-								<div className="flex items-start justify-between mb-4">
-									<div>
-										<h3 className="text-lg font-semibold text-gray-900">
+								className="border border-gray-200 rounded-lg p-4 sm:p-6">
+								<div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+									<div className="min-w-0 flex-1">
+										<h3 className="text-base sm:text-lg font-semibold text-gray-900 break-words">
 											Section {index + 1}: {section.title}
 										</h3>
 										{section.description && (
-											<p className="text-gray-600 mt-1">
+											<p className="text-gray-600 mt-1 text-sm sm:text-base break-words">
 												{section.description}
 											</p>
 										)}
 									</div>
 
 									<div
-										className={`px-3 py-1 rounded-full text-sm font-medium ${getScoreBgColor(
+										className={`px-3 py-1 rounded-full text-sm font-medium flex-shrink-0 self-start ${getScoreBgColor(
 											stats.averageScore
 										)} ${getScoreColor(stats.averageScore)}`}>
 										{stats.averageScore.toFixed(1)} / 5.0
 									</div>
 								</div>
 
-								<div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+								<div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4">
 									<div className="text-center p-3 bg-gray-50 rounded-lg">
-										<div className="text-lg font-semibold text-gray-900">
+										<div className="text-base sm:text-lg font-semibold text-gray-900">
 											{stats.answeredQuestions} / {stats.totalQuestions}
 										</div>
-										<div className="text-sm text-gray-600">
+										<div className="text-xs sm:text-sm text-gray-600">
 											Questions Answered
 										</div>
 									</div>
 
 									<div className="text-center p-3 bg-gray-50 rounded-lg">
-										<div className="text-lg font-semibold text-blue-600">
+										<div className="text-base sm:text-lg font-semibold text-blue-600">
 											{stats.completionRate.toFixed(0)}%
 										</div>
-										<div className="text-sm text-gray-600">Completion Rate</div>
+										<div className="text-xs sm:text-sm text-gray-600">
+											Completion Rate
+										</div>
 									</div>
 
 									<div className="text-center p-3 bg-gray-50 rounded-lg">
 										<div
-											className={`text-lg font-semibold ${getScoreColor(
+											className={`text-base sm:text-lg font-semibold ${getScoreColor(
 												stats.averageScore
 											)}`}>
 											{stats.averageScore.toFixed(1)}
 										</div>
-										<div className="text-sm text-gray-600">Average Score</div>
+										<div className="text-xs sm:text-sm text-gray-600">
+											Average Score
+										</div>
 									</div>
 								</div>
 
 								{/* Question Responses */}
-								<div className="space-y-4">
-									<h4 className="font-medium text-gray-900">Your Responses:</h4>
+								<div className="space-y-3 sm:space-y-4">
+									<h4 className="font-medium text-gray-900 text-sm sm:text-base">
+										Your Responses:
+									</h4>
 									{section.questions.map((question, qIndex) => {
 										const answer = response.answers.find(
 											(a) => a.questionId === question._id
@@ -443,32 +467,32 @@ export default function AssessmentResultsPage() {
 										return (
 											<div
 												key={question._id}
-												className="bg-gray-50 rounded-lg p-4">
-												<div className="flex items-start justify-between mb-3">
-													<div className="flex-1">
-														<span className="text-sm font-medium text-gray-500">
+												className="bg-gray-50 rounded-lg p-3 sm:p-4">
+												<div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
+													<div className="flex-1 min-w-0">
+														<span className="text-xs sm:text-sm font-medium text-gray-500">
 															{index + 1}.{qIndex + 1}
 														</span>
-														<p className="text-gray-900 mt-1">
+														<p className="text-gray-900 mt-1 text-sm sm:text-base break-words">
 															{question.text}
 														</p>
 													</div>
 
 													{answer ? (
-														<div className="ml-4 text-right">
+														<div className="sm:ml-4 sm:text-right flex-shrink-0">
 															<div
-																className={`inline-flex items-center px-2 py-1 rounded text-sm font-medium ${getScoreBgColor(
+																className={`inline-flex items-center px-2 py-1 rounded text-xs sm:text-sm font-medium ${getScoreBgColor(
 																	answer.value
 																)} ${getScoreColor(answer.value)}`}>
 																{answer.value} / 5
 															</div>
-															<div className="text-xs text-gray-500 mt-1">
+															<div className="text-xs text-gray-500 mt-1 break-words">
 																{question.scaleOptions.labels[answer.value - 1]}
 															</div>
 														</div>
 													) : (
-														<div className="ml-4 text-right">
-															<span className="inline-flex items-center px-2 py-1 rounded text-sm font-medium bg-gray-200 text-gray-600">
+														<div className="sm:ml-4 sm:text-right flex-shrink-0">
+															<span className="inline-flex items-center px-2 py-1 rounded text-xs sm:text-sm font-medium bg-gray-200 text-gray-600">
 																Not answered
 															</span>
 														</div>
@@ -479,8 +503,12 @@ export default function AssessmentResultsPage() {
 												{answer && (
 													<div className="mt-3">
 														<div className="flex items-center justify-between text-xs text-gray-500 mb-1">
-															<span>{question.scaleOptions.minLabel}</span>
-															<span>{question.scaleOptions.maxLabel}</span>
+															<span className="truncate">
+																{question.scaleOptions.minLabel}
+															</span>
+															<span className="truncate">
+																{question.scaleOptions.maxLabel}
+															</span>
 														</div>
 														<div className="flex space-x-1">
 															{question.scaleOptions.labels.map(
@@ -510,24 +538,24 @@ export default function AssessmentResultsPage() {
 			</div>
 
 			{/* Actions */}
-			<div className="flex items-center justify-between bg-white rounded-lg border border-gray-200 p-4">
+			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
 				<Link
 					href="/student/assessments"
-					className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50">
+					className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 w-full sm:w-auto">
 					<ArrowLeft className="w-4 h-4 mr-2" />
 					Back to Assessments
 				</Link>
 
-				<div className="flex space-x-3">
+				<div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
 					<button
 						onClick={() => window.print()}
-						className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50">
+						className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 w-full sm:w-auto">
 						Print Results
 					</button>
 
 					<Link
 						href={`/student/assessments/${assessmentId}`}
-						className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+						className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 w-full sm:w-auto">
 						View Assessment Details
 					</Link>
 				</div>
