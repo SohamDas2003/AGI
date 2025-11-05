@@ -92,6 +92,12 @@ const navigationItems: NavigationItem[] = [
 		icon: Target,
 		roles: ["ADMIN"],
 	},
+	{
+		label: "Profile",
+		href: "/admin/profile",
+		icon: User,
+		roles: ["ADMIN"],
+	},
 
 	// STUDENT Navigation (only existing pages)
 	{
@@ -104,6 +110,12 @@ const navigationItems: NavigationItem[] = [
 		label: "Assessments",
 		href: "/student/assessments",
 		icon: Target,
+		roles: ["STUDENT"],
+	},
+	{
+		label: "Profile",
+		href: "/student/profile",
+		icon: User,
 		roles: ["STUDENT"],
 	},
 ];
@@ -234,7 +246,18 @@ export default function DashboardLayout({
 					{/* User Profile and Logout */}
 					<div className="mt-auto border-t border-gray-200">
 						<div className="p-4">
-							<div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50">
+							<div
+								onClick={() => {
+									if (user.role === "STUDENT") {
+										router.push("/student/profile");
+									} else if (user.role === "ADMIN") {
+										router.push("/admin/profile");
+									} else if (user.role === "SUPERADMIN") {
+										router.push("/superadmin/profile");
+									}
+									setIsMobileSidebarOpen(false);
+								}}
+								className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer">
 								<div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center">
 									<span className="text-sm font-medium text-white">
 										{user.firstName.charAt(0)}
@@ -341,6 +364,15 @@ export default function DashboardLayout({
 				{/* User Profile */}
 				<div className="p-4 border-t border-gray-200">
 					<div
+						onClick={() => {
+							if (user.role === "STUDENT") {
+								router.push("/student/profile");
+							} else if (user.role === "ADMIN") {
+								router.push("/admin/profile");
+							} else if (user.role === "SUPERADMIN") {
+								router.push("/superadmin/profile");
+							}
+						}}
 						className={`flex items-center ${
 							isSidebarCollapsed ? "justify-center" : "space-x-3"
 						} p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200 cursor-pointer`}>

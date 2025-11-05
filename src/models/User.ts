@@ -7,6 +7,8 @@ export interface User {
 	role: "SUPERADMIN" | "ADMIN" | "STUDENT";
 	firstName: string;
 	lastName: string;
+	resetPasswordToken?: string;
+	resetPasswordExpires?: Date;
 	createdAt?: Date;
 	updatedAt?: Date;
 }

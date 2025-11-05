@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import {
@@ -88,6 +88,11 @@ const getNavigationForRole = (
 					icon: Target,
 					href: "/student/assessments",
 				},
+				{
+					name: "Profile",
+					icon: Settings,
+					href: "/student/profile",
+				},
 			];
 		default:
 			return [
@@ -105,6 +110,7 @@ export default function Sidebar({
 	userRole = "ADMIN",
 }: SidebarProps) {
 	const pathname = usePathname();
+	const router = useRouter();
 	const navigation = getNavigationForRole(userRole);
 
 	// Function to check if the current path matches the navigation item
@@ -209,7 +215,17 @@ export default function Sidebar({
 
 			{/* User Profile */}
 			<div className="p-4 border-t border-gray-200">
-				<div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200 cursor-pointer">
+				<div
+					onClick={() => {
+						const profilePath =
+							userRole === "STUDENT"
+								? "/student/profile"
+								: userRole === "ADMIN"
+								? "/admin/profile"
+								: "/superadmin/profile";
+						router.push(profilePath);
+					}}
+					className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200 cursor-pointer">
 					<div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center">
 						<span className="text-sm font-medium text-white">AD</span>
 					</div>
