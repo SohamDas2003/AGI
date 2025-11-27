@@ -100,6 +100,7 @@ export async function POST(request: NextRequest) {
 			),
 			criteria: {
 				course: assessmentData.criteria?.course || [],
+				pgdmSpecializations: assessmentData.criteria?.pgdmSpecializations || [],
 				batches: [], // Always empty - assessment applies to all batches
 				sites: [],
 				academicSessions: [],

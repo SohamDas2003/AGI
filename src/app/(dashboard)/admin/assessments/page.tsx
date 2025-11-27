@@ -27,6 +27,7 @@ interface Assessment {
 	updatedAt: string;
 	criteria: {
 		course: string[];
+		pgdmSpecializations?: string[];
 	};
 	timeLimit: number;
 	totalSections: number;
@@ -333,6 +334,25 @@ function AssessmentsPage() {
 															{course}
 														</span>
 													))}
+													{/* Show PGDM specializations if available */}
+													{assessment.criteria.pgdmSpecializations &&
+														assessment.criteria.pgdmSpecializations.length >
+															0 && (
+															<div className="mt-2">
+																<span className="text-xs text-gray-500 mr-2">
+																	PGDM:
+																</span>
+																{assessment.criteria.pgdmSpecializations.map(
+																	(spec, i) => (
+																		<span
+																			key={i}
+																			className="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full mr-1 mb-1">
+																			{spec}
+																		</span>
+																	)
+																)}
+															</div>
+														)}
 												</div>
 											</td>
 											<td className="px-6 py-4 text-sm text-gray-900">

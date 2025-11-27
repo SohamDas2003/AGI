@@ -28,6 +28,14 @@ export interface AssessmentSection {
 // Student Assignment Criteria
 export interface AssessmentCriteria {
 	course: ("MCA" | "MMS" | "PGDM" | "ALL")[];
+	// Optional: PGDM subject specializations when PGDM is selected
+	pgdmSpecializations?: (
+		| "Marketing"
+		| "Finance"
+		| "Human Resources"
+		| "Operations"
+		| "Information Technology"
+	)[];
 	batches: string[]; // Specific batches
 	sites?: string[]; // Optional: specific sites
 	academicSessions?: string[]; // Optional: specific academic sessions

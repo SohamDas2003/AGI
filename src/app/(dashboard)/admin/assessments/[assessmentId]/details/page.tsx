@@ -29,6 +29,7 @@ interface AssessmentAnalytics {
 		updatedAt: string;
 		criteria: {
 			course: string[];
+			pgdmSpecializations?: string[];
 		};
 		timeLimit: number;
 		sections: Array<{
@@ -317,6 +318,26 @@ export default function AssessmentDetailsPage() {
 													)
 												)}
 											</div>
+											{data.assessment.criteria.pgdmSpecializations &&
+												data.assessment.criteria.pgdmSpecializations.length >
+													0 && (
+													<div className="mt-2">
+														<label className="text-sm font-medium text-gray-500">
+															PGDM Specializations
+														</label>
+														<div className="mt-1 flex flex-wrap gap-1">
+															{data.assessment.criteria.pgdmSpecializations.map(
+																(spec, idx) => (
+																	<span
+																		key={idx}
+																		className="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">
+																		{spec}
+																	</span>
+																)
+															)}
+														</div>
+													</div>
+												)}
 										</div>
 									</div>
 								</div>

@@ -43,7 +43,7 @@ const createNewQuestion = (): Question => ({
 const createNewSection = (): Section => ({
 	title: "",
 	description: "",
-	questions: [],
+	questions: [createNewQuestion()],
 });
 
 function SectionsForm({ formData, updateFormData }: SectionsFormProps) {
@@ -248,12 +248,6 @@ function SectionsForm({ formData, updateFormData }: SectionsFormProps) {
 											<h4 className="text-sm font-medium text-gray-900">
 												Questions
 											</h4>
-											<button
-												onClick={() => addQuestion(sectionIndex)}
-												className="inline-flex items-center px-3 py-1 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
-												<Plus className="h-3 w-3 mr-1" />
-												Add Question
-											</button>
 										</div>
 
 										{section.questions.length === 0 ? (
@@ -314,6 +308,12 @@ function SectionsForm({ formData, updateFormData }: SectionsFormProps) {
 														</div>
 													</div>
 												))}
+												<button
+													onClick={() => addQuestion(sectionIndex)}
+													className="inline-flex items-center px-3 py-1 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
+													<Plus className="h-3 w-3 mr-1" />
+													Add Question
+												</button>
 											</div>
 										)}
 									</div>

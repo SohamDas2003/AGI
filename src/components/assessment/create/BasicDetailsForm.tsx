@@ -6,6 +6,13 @@ interface AssessmentFormData {
 	description: string;
 	criteria: {
 		course: ("MCA" | "MMS" | "PGDM")[];
+		pgdmSpecializations?: (
+			| "Marketing"
+			| "Finance"
+			| "Human Resources"
+			| "Operations"
+			| "Information Technology"
+		)[];
 	};
 	timeLimit?: number;
 	instructions: string;
@@ -26,6 +33,20 @@ const COURSE_OPTIONS = [
 	{ value: "PGDM", label: "PGDM (Post Graduate Diploma in Management)" },
 ];
 
+const PGDM_SPECIALIZATION_OPTIONS: (
+	| "Marketing"
+	| "Finance"
+	| "Human Resources"
+	| "Operations"
+	| "Information Technology"
+)[] = [
+	"Marketing",
+	"Finance",
+	"Human Resources",
+	"Operations",
+	"Information Technology",
+];
+
 function BasicDetailsForm({ formData, updateFormData }: BasicDetailsFormProps) {
 	const handleInputChange = (
 		field: keyof AssessmentFormData,
@@ -44,7 +65,27 @@ function BasicDetailsForm({ formData, updateFormData }: BasicDetailsFormProps) {
 			criteria: {
 				...formData.criteria,
 				[field]: newArray,
+				pgdmSpecializations: newArray.includes("PGDM")
+					? formData.criteria.pgdmSpecializations || []
+					: [],
 			},
+		});
+	};
+
+	const togglePgdmSpecialization = (
+		value:
+			| "Marketing"
+			| "Finance"
+			| "Human Resources"
+			| "Operations"
+			| "Information Technology"
+	) => {
+		const current = formData.criteria.pgdmSpecializations || [];
+		const next = current.includes(value)
+			? current.filter((v) => v !== value)
+			: [...current, value];
+		updateFormData({
+			criteria: { ...formData.criteria, pgdmSpecializations: next },
 		});
 	};
 
@@ -141,6 +182,35 @@ function BasicDetailsForm({ formData, updateFormData }: BasicDetailsFormProps) {
 							</label>
 						))}
 					</div>
+
+					{/* PGDM Specializations - appears when PGDM is checked */}
+					{formData.criteria.course.includes("PGDM") && (
+						<div className="mt-4 pl-6 border-l-2 border-blue-200">
+							<label className="block text-sm font-medium text-gray-700 mb-2">
+								PGDM Specializations{" "}
+								<span className="text-gray-500 text-xs">
+									(select one or more)
+								</span>
+							</label>
+							<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+								{PGDM_SPECIALIZATION_OPTIONS.map((spec) => (
+									<label
+										key={spec}
+										className="flex items-center">
+										<input
+											type="checkbox"
+											checked={(
+												formData.criteria.pgdmSpecializations || []
+											).includes(spec)}
+											onChange={() => togglePgdmSpecialization(spec)}
+											className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+										/>
+										<span className="ml-2 text-sm text-gray-700">{spec}</span>
+									</label>
+								))}
+							</div>
+						</div>
+					)}
 				</div>
 			</div>
 
@@ -269,6 +339,12 @@ function BasicDetailsForm({ formData, updateFormData }: BasicDetailsFormProps) {
 					Please select at least one target course.
 				</div>
 			)}
+			{formData.criteria.course.includes("PGDM") &&
+				(formData.criteria.pgdmSpecializations || []).length === 0 && (
+					<div className="text-red-600 text-sm">
+						Please select at least one PGDM specialization.
+					</div>
+				)}
 		</div>
 	);
 }

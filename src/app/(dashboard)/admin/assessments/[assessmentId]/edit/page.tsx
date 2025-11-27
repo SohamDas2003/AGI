@@ -24,6 +24,13 @@ export interface AssessmentFormData {
 	description: string;
 	criteria: {
 		course: ("MCA" | "MMS" | "PGDM")[];
+		pgdmSpecializations?: (
+			| "Marketing"
+			| "Finance"
+			| "Human Resources"
+			| "Operations"
+			| "Information Technology"
+		)[];
 	};
 	timeLimit?: number;
 	instructions: string;
@@ -55,6 +62,7 @@ const INITIAL_FORM_DATA: AssessmentFormData = {
 	description: "",
 	criteria: {
 		course: [],
+		pgdmSpecializations: [],
 	},
 	timeLimit: 60,
 	instructions: "",
@@ -117,6 +125,8 @@ function EditAssessmentPage() {
 						description: assessment.description || "",
 						criteria: {
 							course: assessment.criteria?.course || [],
+							pgdmSpecializations:
+								assessment.criteria?.pgdmSpecializations || [],
 						},
 						timeLimit: assessment.timeLimit,
 						instructions: assessment.instructions || "",
@@ -256,7 +266,10 @@ function EditAssessmentPage() {
 			case 1:
 				return (
 					(formData.title || "").trim() !== "" &&
-					formData.criteria.course.length > 0
+					formData.criteria.course.length > 0 &&
+					(!formData.criteria.course.includes("PGDM") ||
+						(!!formData.criteria.pgdmSpecializations &&
+							formData.criteria.pgdmSpecializations.length > 0))
 				);
 			case 2:
 				return (

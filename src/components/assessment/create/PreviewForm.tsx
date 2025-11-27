@@ -1,6 +1,5 @@
 import React from "react";
 import {
-	CheckCircle,
 	Clock,
 	Users,
 	FileText,
@@ -49,8 +48,6 @@ interface PreviewFormProps {
 
 function PreviewForm({
 	formData,
-	onCreateAssessment,
-	isCreating,
 	isEditMode = false,
 }: PreviewFormProps) {
 	const totalQuestions = formData.sections.reduce(
@@ -280,30 +277,6 @@ function PreviewForm({
 						</div>
 					))}
 				</div>
-			</div>
-
-			{/* Create/Update Button */}
-			<div className="flex justify-center">
-				<button
-					onClick={onCreateAssessment}
-					disabled={!isValid || isCreating}
-					className={`flex items-center px-8 py-3 rounded-lg font-medium ${
-						isValid && !isCreating
-							? "bg-green-600 text-white hover:bg-green-700"
-							: "bg-gray-300 text-gray-500 cursor-not-allowed"
-					}`}>
-					{isCreating ? (
-						<>
-							<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-							{isEditMode ? "Updating Assessment..." : "Creating Assessment..."}
-						</>
-					) : (
-						<>
-							<CheckCircle className="h-5 w-5 mr-2" />
-							{isEditMode ? "Update Assessment" : "Create Assessment"}
-						</>
-					)}
-				</button>
 			</div>
 
 			{/* Final Notes */}
